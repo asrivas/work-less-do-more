@@ -7,10 +7,11 @@ const TOKEN_PATH = 'token.json';
 
 const main = async () => {
   const content = await fs.readFile('credentials.json');
-  authorize(JSON.parse(content), listMajors);
+  const oAuthClient = await authorize(JSON.parse(content));
+  listMajors(oAuthClient);
 }
 
-async function authorize(credentials, callback) {
+async function authorize(credentials) {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
     client_id, client_secret, redirect_uris[0]
@@ -19,10 +20,10 @@ async function authorize(credentials, callback) {
   try {
     const token = await fs.readFile(TOKEN_PATH);
     oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client);
+    return new Promise(resolve => resolve(oAuth2Client));
   } catch (err) {
     const authorizedClient = await getNewToken(oAuth2Client);
-    callback(authorizedClient);
+    return new Promise(resolve => resolve(authorizedClient));
   }
 }
 
@@ -42,8 +43,8 @@ function getNewToken(oAuth2Client, callback) {
       rl.close();
       oAuth2Client.getToken(code, async (err, token) => {
         if (err) {
-           console.log('Error while trying to retrieve access token', err);
-           reject(err);
+          console.log('Error while trying to retrieve access token', err);
+          reject(err);
         }
         oAuth2Client.setCredentials(token);
         await fs.writeFile(TOKEN_PATH, JSON.stringify(token));
