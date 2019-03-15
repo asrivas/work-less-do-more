@@ -43,15 +43,17 @@ async function getNewToken(oAuth2Client) {
 
 async function readNumbers(auth) {
   const sheets = google.sheets({ version: 'v4', auth });
-  const res = await sheets.spreadsheets.values.get({
+  const ranges = ['Sheet1!A2:A', 'Sheet1!C2:C']
+  const { data } = await sheets.spreadsheets.values.batchGet({
     spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
-    range: 'Sheet1!A2:A',
+    ranges,
   })
-  const rows = res.data.values;
-  if (rows.length) {
-    console.log('Fancy Number:');
-    for (const row of rows) {
-      console.log(`${row[0]}`);
+  if (data.valueRanges.length) {
+    const numbers = data.valueRanges[0].values;
+    const letters = data.valueRanges[1].values;
+    console.log('Fancy Number, Favorite Letter:');
+    for (let i = 0; i < numbers.length; i++) {
+      console.log(`${numbers[i]}, ${letters[i]}`);
     }
   } else {
     console.log('No data found.');
