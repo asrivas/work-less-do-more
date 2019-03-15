@@ -64,9 +64,9 @@ async function listMajors(auth) {
   const rows = res.data.values;
   if (rows.length) {
     console.log('Name, Major:');
-    rows.map(row => {
+    for (const row of rows) {
       console.log(`${row[0]}, ${row[4]}`);
-    });
+    }
   } else {
     console.log('No data found.');
   }
