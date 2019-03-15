@@ -21,7 +21,8 @@ async function authorize(credentials, callback) {
     oAuth2Client.setCredentials(JSON.parse(token));
     callback(oAuth2Client);
   } catch (err) {
-    getNewToken(oAuth2Client, callback);
+    const authorizedClient = await getNewToken(oAuth2Client);
+    callback(authorizedClient);
   }
 }
 
@@ -35,16 +36,20 @@ function getNewToken(oAuth2Client, callback) {
     input: process.stdin,
     output: process.stdout,
   });
-  rl.question('Enter the code form that page here: ', (code) => {
-    rl.close();
-    oAuth2Client.getToken(code, async (err, token) => {
-      if (err) {
-        return console.log('Error while trying to retrieve access token', err);
-      }
-      oAuth2Client.setCredentials(token);
-      await fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-      console.log('Token stored to', TOKEN_PATH);
-      callback(oAuth2Client);
+
+  return new Promise((resolve, reject) => {
+    rl.question('Enter the code form that page here: ', (code) => {
+      rl.close();
+      oAuth2Client.getToken(code, async (err, token) => {
+        if (err) {
+           console.log('Error while trying to retrieve access token', err);
+           reject(err);
+        }
+        oAuth2Client.setCredentials(token);
+        await fs.writeFile(TOKEN_PATH, JSON.stringify(token));
+        console.log('Token stored to', TOKEN_PATH);
+        resolve(oAuth2Client);
+      });
     });
   });
 }
