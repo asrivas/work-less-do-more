@@ -6,12 +6,8 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 const TOKEN_PATH = 'token.json';
 
 const main = async () => {
-  try {
-    const content = await fs.readFile('credentials.json');
-    authorize(JSON.parse(content), listMajors);
-  } catch (err) {
-    console.log('Error loading client secret file: ' + err);
-  }
+  const content = await fs.readFile('credentials.json');
+  authorize(JSON.parse(content), listMajors);
 }
 
 async function authorize(credentials, callback) {
@@ -46,36 +42,28 @@ function getNewToken(oAuth2Client, callback) {
         return console.log('Error while trying to retrieve access token', err);
       }
       oAuth2Client.setCredentials(token);
-      try {
-        await fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-        console.log('Token stored to', TOKEN_PATH);
-        callback(oAuth2Client);
-      } catch (err) {
-        console.log(err);
-      }
+      await fs.writeFile(TOKEN_PATH, JSON.stringify(token));
+      console.log('Token stored to', TOKEN_PATH);
+      callback(oAuth2Client);
     });
   });
 }
 
-function listMajors(auth) {
+async function listMajors(auth) {
   const sheets = google.sheets({ version: 'v4', auth });
-  sheets.spreadsheets.values.get({
+  const res = await sheets.spreadsheets.values.get({
     spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
     range: 'Class Data!A2:E',
-  }, (err, res) => {
-    if (err) {
-      return console.log('The API returned an error: ' + err);
-    }
-    const rows = res.data.values;
-    if (rows.length) {
-      console.log('Name, Major:');
-      rows.map(row => {
-        console.log(`${row[0]}, ${row[4]}`);
-      });
-    } else {
-      console.log('No data found.');
-    }
-  });
+  })
+  const rows = res.data.values;
+  if (rows.length) {
+    console.log('Name, Major:');
+    rows.map(row => {
+      console.log(`${row[0]}, ${row[4]}`);
+    });
+  } else {
+    console.log('No data found.');
+  }
 }
 
 main();
