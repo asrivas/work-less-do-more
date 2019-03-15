@@ -1,5 +1,5 @@
 const fs = require('fs');
-const readline = require('readline');
+const readline = require('readline-promise').default;
 const { google } = require('googleapis');
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
@@ -21,7 +21,7 @@ async function authorize(credentials) {
   }
 }
 
-function getNewToken(oAuth2Client) {
+async function getNewToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES,
@@ -32,21 +32,13 @@ function getNewToken(oAuth2Client) {
     output: process.stdout,
   });
 
-  return new Promise((resolve, reject) => {
-    rl.question('Enter the code form that page here: ', (code) => {
-      rl.close();
-      oAuth2Client.getToken(code, async (err, token) => {
-        if (err) {
-          console.log('Error while trying to retrieve access token', err);
-          reject(err);
-        }
-        oAuth2Client.setCredentials(token);
-        fs.writeFileSync(TOKEN_PATH, JSON.stringify(token));
-        console.log('Token stored to', TOKEN_PATH);
-        resolve(oAuth2Client);
-      });
-    });
-  });
+  const code = await rl.questionAsync('Enter the code form that page here: ');
+  rl.close();
+  const { tokens } = await oAuth2Client.getToken(code);
+  oAuth2Client.setCredentials(tokens);
+  fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens));
+  console.log('Token stored to', TOKEN_PATH);
+  return oAuth2Client;
 }
 
 async function listMajors(auth) {
@@ -69,7 +61,7 @@ async function listMajors(auth) {
 const main = async () => {
   const content = fs.readFileSync('credentials.json');
   const oAuthClient = await authorize(JSON.parse(content));
-  listMajors(oAuthClient);
+  await listMajors(oAuthClient);
 }
 
 

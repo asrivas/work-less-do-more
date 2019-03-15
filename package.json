@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/fhinkel/Sheet-Node.js#readme",
   "dependencies": {
-    "googleapis": "^38.0.0"
+    "googleapis": "^38.0.0",
+    "readline-promise": "^1.0.4"
   }
 }
