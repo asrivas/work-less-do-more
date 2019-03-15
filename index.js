@@ -2,7 +2,7 @@ const fs = require('fs');
 const readline = require('readline-promise').default;
 const { google } = require('googleapis');
 
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const TOKEN_PATH = 'token.json';
 
 async function authorize(credentials) {
@@ -43,7 +43,7 @@ async function getNewToken(oAuth2Client) {
 
 async function readNumbers(auth) {
   const sheets = google.sheets({ version: 'v4', auth });
-  const ranges = ['Sheet1!A2:A', 'Sheet1!C2:C']
+  const ranges = ['Sheet1!A2:A', 'Sheet1!C2:C'];
   const { data } = await sheets.spreadsheets.values.batchGet({
     spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
     ranges,
@@ -60,9 +60,34 @@ async function readNumbers(auth) {
   }
 }
 
+async function writeMoreNumbers(auth, i) {
+  const sheets = google.sheets({ version: 'v4', auth });
+  const data = [{
+    range: `Sheet1!A${i}:A`,
+    values: [[100, 101, 102, 103, 104, 105, 106]],
+    majorDimension: "COLUMNS",
+  },
+  {
+    range: `Sheet1!C${i}:C`,
+    values: [['X', 'Y', 'Z', 'U', 'V', 'W', 'R']],
+    majorDimension: "COLUMNS",
+  }];
+  const resource = {
+    valueInputOption: 'USER_ENTERED',
+    data,
+  };
+
+  const result = await sheets.spreadsheets.values.batchUpdate({
+    spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
+    resource
+  })
+  console.log('Updated cells: ' + result.updatedCells);
+}
+
 const main = async () => {
   const content = fs.readFileSync('credentials.json');
   const oAuthClient = await authorize(JSON.parse(content));
+  await writeMoreNumbers(oAuthClient, 7)
   await readNumbers(oAuthClient);
 }
 
