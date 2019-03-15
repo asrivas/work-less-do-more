@@ -77,11 +77,29 @@ async function writeMoreNumbers(auth, i) {
     data,
   };
 
-  const result = await sheets.spreadsheets.values.batchUpdate({
+  const response = await sheets.spreadsheets.values.batchUpdate({
     spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
-    resource
+    resource,
   })
-  console.log('Updated cells: ' + result.updatedCells);
+  console.log('Updated cells: ' + response.data.totalUpdatedCells);
+}
+
+async function append(auth) {
+  const sheets = google.sheets({ version: 'v4', auth });
+  const r = Math.floor(Math.random() * 1000);
+  const resource = {
+    values: [[r, r + 1, r + 2, r + 3, r + 4]],
+    majorDimension: "COLUMNS",
+  };
+
+  const { data } = await sheets.spreadsheets.values.append({
+    spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
+    range: `Sheet1!A2:A`,
+    valueInputOption: 'USER_ENTERED',
+    insertDataOption: 'OVERWRITE', // should append if adding at the end
+    resource,
+  })
+  console.log('Updated range: ' + data.tableRange);
 }
 
 const main = async () => {
@@ -89,6 +107,7 @@ const main = async () => {
   const oAuthClient = await authorize(JSON.parse(content));
   await writeMoreNumbers(oAuthClient, 7)
   await readNumbers(oAuthClient);
+  await append(oAuthClient);
 }
 
 
