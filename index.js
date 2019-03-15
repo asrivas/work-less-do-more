@@ -41,17 +41,17 @@ async function getNewToken(oAuth2Client) {
   return oAuth2Client;
 }
 
-async function listMajors(auth) {
+async function readNumbers(auth) {
   const sheets = google.sheets({ version: 'v4', auth });
   const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-    range: 'Class Data!A2:E',
+    spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
+    range: 'Sheet1!A2:A',
   })
   const rows = res.data.values;
   if (rows.length) {
-    console.log('Name, Major:');
+    console.log('Fancy Number:');
     for (const row of rows) {
-      console.log(`${row[0]}, ${row[4]}`);
+      console.log(`${row[0]}`);
     }
   } else {
     console.log('No data found.');
@@ -61,7 +61,7 @@ async function listMajors(auth) {
 const main = async () => {
   const content = fs.readFileSync('credentials.json');
   const oAuthClient = await authorize(JSON.parse(content));
-  await listMajors(oAuthClient);
+  await readNumbers(oAuthClient);
 }
 
 
