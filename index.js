@@ -1,15 +1,9 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 const TOKEN_PATH = 'token.json';
-
-const main = async () => {
-  const content = await fs.readFile('credentials.json');
-  const oAuthClient = await authorize(JSON.parse(content));
-  listMajors(oAuthClient);
-}
 
 async function authorize(credentials) {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
@@ -18,16 +12,16 @@ async function authorize(credentials) {
   );
 
   try {
-    const token = await fs.readFile(TOKEN_PATH);
+    const token = fs.readFileSync(TOKEN_PATH);
     oAuth2Client.setCredentials(JSON.parse(token));
-    return new Promise(resolve => resolve(oAuth2Client));
+    return oAuth2Client;
   } catch (err) {
     const authorizedClient = await getNewToken(oAuth2Client);
-    return new Promise(resolve => resolve(authorizedClient));
+    return authorizedClient;
   }
 }
 
-function getNewToken(oAuth2Client, callback) {
+function getNewToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES,
@@ -47,7 +41,7 @@ function getNewToken(oAuth2Client, callback) {
           reject(err);
         }
         oAuth2Client.setCredentials(token);
-        await fs.writeFile(TOKEN_PATH, JSON.stringify(token));
+        fs.writeFileSync(TOKEN_PATH, JSON.stringify(token));
         console.log('Token stored to', TOKEN_PATH);
         resolve(oAuth2Client);
       });
@@ -71,5 +65,12 @@ async function listMajors(auth) {
     console.log('No data found.');
   }
 }
+
+const main = async () => {
+  const content = fs.readFileSync('credentials.json');
+  const oAuthClient = await authorize(JSON.parse(content));
+  listMajors(oAuthClient);
+}
+
 
 main();
