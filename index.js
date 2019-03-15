@@ -1,30 +1,32 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const readline = require('readline');
 const { google } = require('googleapis');
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 const TOKEN_PATH = 'token.json';
 
-fs.readFile('credentials.json', (err, content) => {
-  if (err) {
-    return console.log('Error loading client secret file: ' + err);
+const main = async () => {
+  try {
+    const content = await fs.readFile('credentials.json');
+    authorize(JSON.parse(content), listMajors);
+  } catch (err) {
+    console.log('Error loading client secret file: ' + err);
   }
-  authorize(JSON.parse(content), listMajors);
-});
+}
 
-function authorize(credentials, callback) {
+async function authorize(credentials, callback) {
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
     client_id, client_secret, redirect_uris[0]
   );
 
-  fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) {
-      return getNewToken(oAuth2Client, callback);
-    }
+  try {
+    const token = await fs.readFile(TOKEN_PATH);
     oAuth2Client.setCredentials(JSON.parse(token));
     callback(oAuth2Client);
-  });
+  } catch (err) {
+    getNewToken(oAuth2Client, callback);
+  }
 }
 
 function getNewToken(oAuth2Client, callback) {
@@ -39,18 +41,18 @@ function getNewToken(oAuth2Client, callback) {
   });
   rl.question('Enter the code form that page here: ', (code) => {
     rl.close();
-    oAuth2Client.getToken(code, (err, token) => {
+    oAuth2Client.getToken(code, async (err, token) => {
       if (err) {
         return console.log('Error while trying to retrieve access token', err);
       }
       oAuth2Client.setCredentials(token);
-      fs.writeFile(TOKEN_PATH, JSON.stringify(token), err => {
-        if (err) {
-          return console.log(err);
-        }
+      try {
+        await fs.writeFile(TOKEN_PATH, JSON.stringify(token));
         console.log('Token stored to', TOKEN_PATH);
-      });
-      callback(oAuth2Client);
+        callback(oAuth2Client);
+      } catch (err) {
+        console.log(err);
+      }
     });
   });
 }
@@ -75,3 +77,5 @@ function listMajors(auth) {
     }
   });
 }
+
+main();
