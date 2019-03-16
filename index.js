@@ -82,6 +82,118 @@ async function writeMoreNumbers(sheets, i) {
   console.log('Updated cells: ' + response.data.totalUpdatedCells);
 }
 
+async function createChart(sheets) {
+  const { data } = await sheets.spreadsheets.get({
+    spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
+  });
+  let { properties } = data.sheets[1]
+  const sheetId = properties.sheetId;
+  const requests = [{
+    addChart: {
+      "chart": {
+        "spec": {
+          "title": "Model Q1 Sales",
+          "basicChart": {
+            "chartType": "COLUMN",
+            "legendPosition": "BOTTOM_LEGEND",
+            "axis": [
+              {
+                "position": "BOTTOM_AXIS",
+                "title": "Model Numbers"
+              },
+              {
+                "position": "LEFT_AXIS",
+                "title": "Sales"
+              }
+            ],
+            "domains": [
+              {
+                "domain": {
+                  "sourceRange": {
+                    "sources": [
+                      {
+                        "sheetId": sheetId,
+                        "startRowIndex": 0,
+                        "endRowIndex": 7,
+                        "startColumnIndex": 0,
+                        "endColumnIndex": 1
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "series": [
+              {
+                "series": {
+                  "sourceRange": {
+                    "sources": [
+                      {
+                        "sheetId": sheetId,
+                        "startRowIndex": 0,
+                        "endRowIndex": 7,
+                        "startColumnIndex": 1,
+                        "endColumnIndex": 2
+                      }
+                    ]
+                  }
+                },
+                "targetAxis": "LEFT_AXIS"
+              },
+              {
+                "series": {
+                  "sourceRange": {
+                    "sources": [
+                      {
+                        "sheetId": sheetId,
+                        "startRowIndex": 0,
+                        "endRowIndex": 7,
+                        "startColumnIndex": 2,
+                        "endColumnIndex": 3
+                      }
+                    ]
+                  }
+                },
+                "targetAxis": "LEFT_AXIS"
+              },
+              {
+                "series": {
+                  "sourceRange": {
+                    "sources": [
+                      {
+                        "sheetId": sheetId,
+                        "startRowIndex": 0,
+                        "endRowIndex": 7,
+                        "startColumnIndex": 3,
+                        "endColumnIndex": 4
+                      }
+                    ]
+                  }
+                },
+                "targetAxis": "LEFT_AXIS"
+              }
+            ],
+            "headerCount": 1
+          }
+        },
+        "position": {
+          "newSheet": true
+        }
+      }
+    }
+  }];
+
+  const resource = {
+    requests,
+  }
+
+  const response = await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
+    resource,
+  })
+  console.log('Chart created: ' + response.data.totalUpdatedCells);
+}
+
 async function append(sheets) {
   const r = Math.floor(Math.random() * 1000);
   const resource = {
@@ -104,9 +216,11 @@ const main = async () => {
   const auth = await authorize(JSON.parse(content));
   const sheets = google.sheets({ version: 'v4', auth });
 
-  await writeMoreNumbers(sheets, 7)
-  await readNumbers(sheets);
-  await append(sheets);
+  await createChart(sheets);
+
+  // await writeMoreNumbers(sheets, 7)
+  // await readNumbers(sheets);
+  // await append(sheets);
 }
 
 
