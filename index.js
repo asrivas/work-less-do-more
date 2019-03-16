@@ -41,8 +41,7 @@ async function getNewToken(oAuth2Client) {
   return oAuth2Client;
 }
 
-async function readNumbers(auth) {
-  const sheets = google.sheets({ version: 'v4', auth });
+async function readNumbers(sheets) {
   const ranges = ['Sheet1!A2:A', 'Sheet1!C2:C'];
   const { data } = await sheets.spreadsheets.values.batchGet({
     spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
@@ -60,8 +59,7 @@ async function readNumbers(auth) {
   }
 }
 
-async function writeMoreNumbers(auth, i) {
-  const sheets = google.sheets({ version: 'v4', auth });
+async function writeMoreNumbers(sheets, i) {
   const data = [{
     range: `Sheet1!A${i}:A`,
     values: [[100, 101, 102, 103, 104, 105, 106]],
@@ -84,8 +82,7 @@ async function writeMoreNumbers(auth, i) {
   console.log('Updated cells: ' + response.data.totalUpdatedCells);
 }
 
-async function append(auth) {
-  const sheets = google.sheets({ version: 'v4', auth });
+async function append(sheets) {
   const r = Math.floor(Math.random() * 1000);
   const resource = {
     values: [[r, r + 1, r + 2, r + 3, r + 4]],
@@ -104,10 +101,12 @@ async function append(auth) {
 
 const main = async () => {
   const content = fs.readFileSync('credentials.json');
-  const oAuthClient = await authorize(JSON.parse(content));
-  await writeMoreNumbers(oAuthClient, 7)
-  await readNumbers(oAuthClient);
-  await append(oAuthClient);
+  const auth = await authorize(JSON.parse(content));
+  const sheets = google.sheets({ version: 'v4', auth });
+
+  await writeMoreNumbers(sheets, 7)
+  await readNumbers(sheets);
+  await append(sheets);
 }
 
 
