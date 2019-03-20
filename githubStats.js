@@ -26,9 +26,22 @@ const numberOfClones = async (octokit) => {
 
 const numberOfViews = async (octokit) => {
   const { data } = await octokit.repos.getViews({
-    owner: 'GoogleCloudPlatform', repo: 'nodejs-getting-started', per: 'day',
+    owner: 'GoogleCloudPlatform', repo: 'nodejs-getting-started', per: 'week',
   });
   console.log(`Views: ${data.count}`);
+  // The 14 day period is split into 3 weeks, where first and last week do
+  // not include data for all 7 weeks. Only look at the middle week where
+  // data is complete.
+  console.log(`Weekly views: ${data.views[1].count}`);
+
+}
+
+const popularContent = async (octokit) => {
+  const { data } = await octokit.repos.getTopPaths({
+    owner: 'GoogleCloudPlatform', repo: 'nodejs-getting-started', per: 'week',
+  });
+  // Only provides compound data for 14 days
+  console.log(`Top path: ${data[0].path}, ${data[0].count} views`);
 }
 
 const main = async () => {
@@ -38,6 +51,7 @@ const main = async () => {
   // listOrgRepos(octokit);
   await numberOfClones(octokit);
   await numberOfViews(octokit);
+  await popularContent(octokit);
 }
 
-  main();
+main();
