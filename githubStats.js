@@ -1,4 +1,5 @@
 const Octokit = require('@octokit/rest');
+const fs = require('fs').promises;
 
 const listOrgRepos = async (octokit) => {
   // Compare: https://developer.github.com/v3/repos/#list-organization-repositories
@@ -17,28 +18,26 @@ const listOrgRepos = async (octokit) => {
 
 const numberOfClones = async (octokit) => {
   // https://octokit.github.io/rest.js/#api-Repos-getClones
-  const {data} = await octokit.repos.getClones({
-    owner: 'fhinkel', repo: 'twitch',
+  const { data } = await octokit.repos.getClones({
+    owner: 'GoogleCloudPlatform', repo: 'nodejs-getting-started',
   });
   console.log(`Clones: ${data.count}`);
 }
 
 const numberOfViews = async (octokit) => {
-  // https://octokit.github.io/rest.js/#api-Repos-getClones
-  const {data} = await octokit.repos.getViews({
-    owner: 'fhinkel', repo: 'twitch', per: 'day',
+  const { data } = await octokit.repos.getViews({
+    owner: 'GoogleCloudPlatform', repo: 'nodejs-getting-started', per: 'day',
   });
-  console.log(`Clones: ${data.count}`);
+  console.log(`Views: ${data.count}`);
 }
 
-const main = async() => {
-  const token = (await require('fs').promises.readFile('githubToken.json')).toString().trim();
-  const octokit = new Octokit({auth: `token ${token}`});
-  
-  
+const main = async () => {
+  const token = (await fs.readFile('githubToken.json')).toString().trim();
+  const octokit = new Octokit({ auth: `token ${token}` });
+
   // listOrgRepos(octokit);
-  numberOfClones(octokit);
-  numberOfViews(octokit);
+  await numberOfClones(octokit);
+  await numberOfViews(octokit);
 }
 
-main();
+  main();
