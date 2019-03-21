@@ -3,9 +3,9 @@
 ## GitHub
 Record traffic data from *-getting-started repos.
 * time stamps
-* number of views
-* number of clones
-* number of views for top ten path (after a while, there will be more than 10 paths as these fluctuate over time)
+* number of views, total and unique
+* number of clones, total and unique
+* number of views for top ten path (after a while, there will be more than 10 paths as these fluctuate over time), total and unique
 
 * GitHub provides traffic data for the last 14 days
 * For *Top Paths*, Github only provides summaries for 14 days, so we need to collect data daily to calculate daily top paths.
