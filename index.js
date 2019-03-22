@@ -2,7 +2,7 @@ const fs = require('fs');
 const readline = require('readline-promise').default;
 const { google } = require('googleapis');
 
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+const SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive.install'];
 const TOKEN_PATH = 'token.json';
 
 async function authorize(credentials) {
