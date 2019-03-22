@@ -191,7 +191,7 @@ async function createChart(sheets) {
     spreadsheetId: '1Xk_Ga95VxShd-Df5olg_8dV0Ydw8B0l6bw5E2boUzmY',
     resource,
   })
-  console.log('Chart created: ' + response.data.totalUpdatedCells);
+  console.log('Chart created with Id: ' + response.data.replies[0].addChart.chart.chartId);
 }
 
 async function append(sheets) {
