@@ -218,7 +218,7 @@ const main = async () => {
 
   await createChart(sheets);
 
-  // await writeMoreNumbers(sheets, 7)
+  await writeMoreNumbers(sheets, 7)
   // await readNumbers(sheets);
   // await append(sheets);
 }

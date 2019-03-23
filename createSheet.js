@@ -41,16 +41,33 @@ async function getNewToken(oAuth2Client) {
     return oAuth2Client;
 }
 
-async function createSheet(sheets) {
+async function createSheet(sheets, title) {
     const resource = {
         properties: {
-            title: 'Views and Clones',
+            title,
         }
     }
-    const {data} = await sheets.spreadsheets.create({resource});
+    const { data } = await sheets.spreadsheets.create({ resource });
 
     console.log(`Created new spreadsheet with ID: ${data.spreadsheetId}`);
     return data.spreadsheetId;
+}
+
+async function writeHeader(sheets, spreadsheetId) {
+    const values = [['Timestamp', 'Unique Views', 'Unique Clones']];
+    const resource = {
+        values,
+    };
+    const range = 'A1:C1';
+    const valueInputOption = 'USER_ENTERED'
+
+    const response = await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range,
+        resource,
+        valueInputOption,
+    })
+    console.log('Updated cells: ' + response.data.totalUpdatedCells);
 }
 
 
@@ -59,7 +76,9 @@ const main = async () => {
     const auth = await authorize(JSON.parse(content));
     const sheets = google.sheets({ version: 'v4', auth });
 
-    let id = await createSheet(sheets);
+    const title = 'Views and Clones';
+    let id = await createSheet(sheets, title);
+    await writeHeader(sheets, id, 0);
 }
 
 
