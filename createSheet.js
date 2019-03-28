@@ -71,6 +71,25 @@ async function writeHeader(sheets, spreadsheetId) {
     console.log('Updated cells: ' + response.data.totalUpdatedCells);
 }
 
+async function appendCloneData(sheets, spreadsheetId, cloneData) {
+    const range = 'Sheet1!A2:C';
+    const valueInputOption = 'USER_ENTERED';
+    const values = [];
+    for (const entry of cloneData) {
+        values.push([entry.timestamp, , entry.uniques]);
+    }
+
+    const response = await sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range,
+        valueInputOption,
+        resource: {
+            values
+        }
+    })
+    console.log(response);
+}
+
 const numberOfClones = async (octokit) => {
     // https://octokit.github.io/rest.js/#api-Repos-getClones
     const { data } = await octokit.repos.getClones({
@@ -80,7 +99,6 @@ const numberOfClones = async (octokit) => {
     // Array of 2 weeks
     return data.clones;
   }
-
 
 const main = async () => {
     const content = (await fs.readFile('credentials.json')).toString();
@@ -92,9 +110,10 @@ const main = async () => {
     const octokit = new Octokit({ auth: `token ${token}` });
 
     const title = 'Generated GitHub Data';
-    //let id = await createSpreadsheet(sheets, title);
-    //await writeHeader(sheets, id, 0);
+    let id = await createSpreadsheet(sheets, title);
+    await writeHeader(sheets, id, 0);
     let cloneData = await numberOfClones(octokit);
+    await appendCloneData(sheets, id, cloneData);
 }
 
 
