@@ -1,6 +1,7 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const readline = require('readline-promise').default;
 const { google } = require('googleapis');
+const Octokit = require('@octokit/rest');
 
 const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
 const TOKEN_PATH = 'token.json';
@@ -12,7 +13,7 @@ async function authorize(credentials) {
     );
 
     try {
-        const token = fs.readFileSync(TOKEN_PATH);
+        const token = (await fs.readFile(TOKEN_PATH)).toString();
         oAuth2Client.setCredentials(JSON.parse(token));
         return oAuth2Client;
     } catch (err) {
@@ -36,12 +37,12 @@ async function getNewToken(oAuth2Client) {
     rl.close();
     const { tokens } = await oAuth2Client.getToken(code);
     oAuth2Client.setCredentials(tokens);
-    fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens));
+    await fs.writeFile(TOKEN_PATH, JSON.stringify(tokens));
     console.log('Token stored to', TOKEN_PATH);
     return oAuth2Client;
 }
 
-async function createSheet(sheets, title) {
+async function createSpreadsheet(sheets, title) {
     const resource = {
         properties: {
             title,
@@ -70,15 +71,30 @@ async function writeHeader(sheets, spreadsheetId) {
     console.log('Updated cells: ' + response.data.totalUpdatedCells);
 }
 
+const numberOfClones = async (octokit) => {
+    // https://octokit.github.io/rest.js/#api-Repos-getClones
+    const { data } = await octokit.repos.getClones({
+      owner: 'GoogleCloudPlatform', repo: 'nodejs-getting-started',
+    });
+    console.log(`Clones: ${data.count}`);
+    // Array of 2 weeks
+    return data.clones;
+  }
+
 
 const main = async () => {
-    const content = fs.readFileSync('credentials.json');
+    const content = (await fs.readFile('credentials.json')).toString();
     const auth = await authorize(JSON.parse(content));
     const sheets = google.sheets({ version: 'v4', auth });
 
-    const title = 'Views and Clones';
-    let id = await createSheet(sheets, title);
-    await writeHeader(sheets, id, 0);
+    // TODO move GitHub set up into helper method
+    const token = (await fs.readFile('githubToken.json')).toString().trim();
+    const octokit = new Octokit({ auth: `token ${token}` });
+
+    const title = 'Generated GitHub Data';
+    //let id = await createSpreadsheet(sheets, title);
+    //await writeHeader(sheets, id, 0);
+    let cloneData = await numberOfClones(octokit);
 }
 
 
