@@ -101,8 +101,9 @@ const numberOfClones = async (octokit) => {
 }
 
 const main = async () => {
-    const content = (await fs.readFile('credentials.json')).toString();
-    const auth = await authorize(JSON.parse(content));
+    // const content = (await fs.readFile('credentials.json')).toString();
+    // const auth = await authorize(JSON.parse(content));
+    const auth = await google.auth.getClient({scopes: SCOPES });
     const sheets = google.sheets({ version: 'v4', auth });
 
     // TODO move GitHub set up into helper method
