@@ -1,46 +1,8 @@
 const fs = require('fs').promises;
-const readline = require('readline-promise').default;
 const { google } = require('googleapis');
 const Octokit = require('@octokit/rest');
 
 const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
-const TOKEN_PATH = 'token.json';
-
-async function authorize(credentials) {
-    const { client_secret, client_id, redirect_uris } = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]
-    );
-
-    try {
-        const token = (await fs.readFile(TOKEN_PATH)).toString();
-        oAuth2Client.setCredentials(JSON.parse(token));
-        return oAuth2Client;
-    } catch (err) {
-        const authorizedClient = await getNewToken(oAuth2Client);
-        return authorizedClient;
-    }
-}
-
-async function getNewToken(oAuth2Client) {
-    const authUrl = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES,
-    });
-    console.log('Authorize this app by visiting this url:', authUrl);
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-
-    const code = await rl.questionAsync('Enter the code form that page here: ');
-    rl.close();
-    const { tokens } = await oAuth2Client.getToken(code);
-    oAuth2Client.setCredentials(tokens);
-    await fs.writeFile(TOKEN_PATH, JSON.stringify(tokens));
-    console.log('Token stored to', TOKEN_PATH);
-    return oAuth2Client;
-}
 
 async function createSpreadsheet(sheets, title) {
     const resource = {
@@ -101,8 +63,6 @@ const numberOfClones = async (octokit) => {
 }
 
 const main = async () => {
-    // const content = (await fs.readFile('credentials.json')).toString();
-    // const auth = await authorize(JSON.parse(content));
     const auth = await google.auth.getClient({scopes: SCOPES });
     const sheets = google.sheets({ version: 'v4', auth });
 
