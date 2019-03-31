@@ -87,18 +87,18 @@ async function appendCloneData(sheets, spreadsheetId, cloneData) {
             values
         }
     })
-    console.log(response);
+    console.log(response.status);
 }
 
 const numberOfClones = async (octokit) => {
     // https://octokit.github.io/rest.js/#api-Repos-getClones
     const { data } = await octokit.repos.getClones({
-      owner: 'GoogleCloudPlatform', repo: 'nodejs-getting-started',
+        owner: 'GoogleCloudPlatform', repo: 'nodejs-getting-started',
     });
     console.log(`Clones: ${data.count}`);
     // Array of 2 weeks
     return data.clones;
-  }
+}
 
 const main = async () => {
     const content = (await fs.readFile('credentials.json')).toString();
