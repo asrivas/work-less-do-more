@@ -49,7 +49,7 @@ async function appendCloneData(sheets, spreadsheetId, cloneData) {
             values
         }
     })
-    console.log(response.status);
+    console.log(`Appending data: ${response.status}`);
 }
 
 const numberOfClones = async (octokit) => {
@@ -92,7 +92,7 @@ const deleteFile = async (drive, fileId) => {
         let res = await drive.files.delete(
             { fileId }
         );
-        console.log(res.status)
+        console.log(`Delete file: {res.status}`)
     } catch (err) {
         console.log('Deleting file failed.')
         console.log(err);
@@ -115,9 +115,8 @@ const checkForSheet = async (drive, title) => {
     try {
         let { data } = await drive.files.list();
         for (const file of data.files) {
-            console.log(file);
             if (file.name === title) {
-                console.log(`Found the file, it's ID is ${file.id}`);
+                console.log(`Using existing file: ${file.id}`);
                 return file.id;
             }
         }
