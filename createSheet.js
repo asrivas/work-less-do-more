@@ -67,7 +67,7 @@ const numberOfClones = async (octokit) => {
     }
 }
 
-const addUser = async (drive, id) => {
+const addUser = async (drive, id, emailAddress) => {
     try {
         let { data } = await drive.permissions.create({
             fileId: id,
@@ -75,22 +75,22 @@ const addUser = async (drive, id) => {
             resource: {
                 type: 'user',
                 role: 'writer',
-                emailAddress: 'fhinkel.demo@gmail.com',
+                emailAddress,
                 transferOwnership: false,
             },
         });
         console.log(`Permission Id: ${data.id}`);
     } catch (err) {
-        console.log('err!!!')
+        console.log(`Failed sharing with ${emailAddress}`);
         console.log(err);
     }
 }
 
-const deleteFile = async(drive, fileId) => {
+const deleteFile = async (drive, fileId) => {
     console.log(fileId);
     try {
         let res = await drive.files.delete(
-            {fileId}
+            { fileId }
         );
         console.log(res.status)
     } catch (err) {
@@ -99,13 +99,27 @@ const deleteFile = async(drive, fileId) => {
     }
 }
 
+const deleteAllFiles = async (drive) => {
+    try {
+        let { data } = await drive.files.list();
+        for (const file of data.files) {
+            await deleteFile(drive, file.id);
+        }
+    } catch (err) {
+        console.log('Listing and deleting files failed.')
+        console.log(err);
+    }
+}
+
 const checkForSheet = async (drive, title) => {
     try {
-        let { data } = await drive.files.list(
-        );
+        let { data } = await drive.files.list();
         for (const file of data.files) {
             console.log(file);
-            // await deleteFile(drive, file.id);
+            if (file.name === title) {
+                console.log(`Found the file, it's ID is ${file.id}`);
+                return file.id;
+            }
         }
     } catch (err) {
         console.log('Listing files failed.')
@@ -117,19 +131,22 @@ const main = async () => {
     const auth = await google.auth.getClient({ scopes: SCOPES });
     const sheets = google.sheets({ version: 'v4', auth });
 
-    // TODO move GitHub set up into helper method
-    //   const token = (await fs.readFile('githubToken.json')).toString().trim();
-    //   const octokit = new Octokit({ auth: `token ${token}` });
+    const token = (await fs.readFile('githubToken.json')).toString().trim();
+    const octokit = new Octokit({ auth: `token ${token}` });
 
     const drive = google.drive({ version: 'v3', auth })
 
-    const title = 'Generated GitHub Data';
-    let exists = await checkForSheet(drive, title);
-    //   let id = await createSpreadsheet(sheets, title);
-    //   await writeHeader(sheets, id, 0);
-    //   let cloneData = await numberOfClones(octokit);
-    //   await appendCloneData(sheets, id, cloneData);
-    //   await addUser(drive, id);
+    // await deleteAllFiles(drive);
+    const title = 'Statistics from GitHub and food survey for I/O talk';
+    let id = await checkForSheet(drive, title);
+    if (!id) {
+        id = await createSpreadsheet(sheets, title);
+        await writeHeader(sheets, id, 0);
+        await addUser(drive, id, 'fhinkel.demo@gmail.com');
+        await addUser(drive, id, 'GSuite.demos@gmail.com');
+    }
+    let cloneData = await numberOfClones(octokit);
+    await appendCloneData(sheets, id, cloneData);
 }
 
 
