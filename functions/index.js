@@ -19,8 +19,8 @@ async function setUp() {
   const id = await createSpreadsheet(sheets, "Sheet from function");
 
   // TODO(asrivast): Use IAM, read email from request.  
-  addUser(drive, id, 'gsuite.demos@gmail.com');
-  addUser(drive, id, 'fhinkel.demo@gmail.com');
+  await addUser(drive, id, 'gsuite.demos@gmail.com');
+  await addUser(drive, id, 'fhinkel.demo@gmail.com');
   return id;
 }
 
