@@ -1,4 +1,5 @@
 const { google } = require('googleapis');
+const utility = require('./utility');
 
 /**
  * Updates data into the chart from Github and mails a chart.
@@ -19,8 +20,8 @@ async function setUp() {
   const id = await createSpreadsheet(sheets, "Sheet from function");
 
   // TODO(asrivast): Use IAM, read email from request.  
-  await addUser(drive, id, 'gsuite.demos@gmail.com');
-  await addUser(drive, id, 'fhinkel.demo@gmail.com');
+  await utility.addUser(drive, id, 'gsuite.demos@gmail.com');
+  await utility.addUser(drive, id, 'fhinkel.demo@gmail.com');
   return id;
 }
 
@@ -43,23 +44,6 @@ async function createSpreadsheet(sheets, title) {
   }
 }
 
-const addUser = async (drive, id, emailAddress) => {
-  try {
-    let { data } = await drive.permissions.create({
-      fileId: id,
-      type: 'user',
-      resource: {
-        type: 'user',
-        // TODO(asrivast): Lower this permission level. 
-        role: 'writer',
-        emailAddress,
-        transferOwnership: false,
-      },
-    });
-    console.log(`Permission Id: ${data.id}`);
-  } catch (err) {
-    console.log(`Failed sharing with ${emailAddress}`);
-    console.log(err);
-  }
-}
+
+
 
