@@ -13,19 +13,17 @@ exports.githubChart = (req, res) => {
 
 async function setUp() {
   let auth = await google.auth.getClient({
-    scopes: ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/gmail.send']
+    scopes: ['https://www.googleapis.com/auth/drive.file']
   });
   const sheets = google.sheets({ version: 'v4', auth });
   const drive = google.drive({ version: 'v3', auth });
-  const gmail = google.gmail({ version: 'v1', auth });
+
   const id = await createSpreadsheet(sheets, "Sheet from function");
 
   // TODO(asrivast): Use IAM, read email from request.  
   await utility.addUser(drive, id, 'gsuite.demos@gmail.com');
   await utility.addUser(drive, id, 'fhinkel.demo@gmail.com');
 
-  await utility.sendEmail(gmail, 'gsuite.demos@gmail.com');
-  await utility.sendEmail(gmail, 'fhinkel.demo@gmail.com');
   return id;
 }
 
