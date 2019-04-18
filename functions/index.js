@@ -12,10 +12,15 @@ exports.githubChart = (req, res) => {
 
 async function setUp() {
   let auth = await google.auth.getClient({
-    scopes: ['https://www.googleapis.com/auth/spreadsheets']
+    scopes: ['https://www.googleapis.com/auth/drive.file']
   });
   const sheets = google.sheets({ version: 'v4', auth });
-  let id = await createSpreadsheet(sheets, "Sheet from function");
+  const drive = google.drive({ version: 'v3', auth });
+  const id = await createSpreadsheet(sheets, "Sheet from function");
+
+  // TODO(asrivast): Use IAM, read email from request.  
+  addUser(drive, id, 'gsuite.demos@gmail.com');
+  addUser(drive, id, 'fhinkel.demo@gmail.com');
   return id;
 }
 
@@ -30,9 +35,31 @@ async function createSpreadsheet(sheets, title) {
   }
   try {
     const { data } = await sheets.spreadsheets.create({ resource });
+    console.log(`Created new spreadsheet with ID: ${data.spreadsheetId}`);
+    return data.spreadsheetId;
   } catch (err) {
     console.log(`error: ${err}`);
+    return err;
   }
-  console.log(`Created new spreadsheet with ID: ${data.spreadsheetId}`);
-  return data.spreadsheetId;
 }
+
+const addUser = async (drive, id, emailAddress) => {
+  try {
+    let { data } = await drive.permissions.create({
+      fileId: id,
+      type: 'user',
+      resource: {
+        type: 'user',
+        // TODO(asrivast): Lower this permission level. 
+        role: 'writer',
+        emailAddress,
+        transferOwnership: false,
+      },
+    });
+    console.log(`Permission Id: ${data.id}`);
+  } catch (err) {
+    console.log(`Failed sharing with ${emailAddress}`);
+    console.log(err);
+  }
+}
+
