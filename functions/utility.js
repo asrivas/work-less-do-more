@@ -14,7 +14,7 @@ exports.addUser = async (drive, id, emailAddress) => {
         });
         console.log(`Permission Id: ${data.id}`);
     } catch (err) {
-        console.log(`Failed sharing with ${emailAddress}`);
-        console.log(err);
+        console.err(`Failed sharing with ${emailAddress}`);
+        console.err(err);
     }
 }
