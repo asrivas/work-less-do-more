@@ -1,4 +1,9 @@
-exports.addUser = async (drive, id, emailAddress) => {
+const { google } = require('googleapis');
+const Octokit = require('@octokit/rest');
+const githubUtilities = require('./githubUtilities');
+const fs = require('fs').promises;
+
+addUser = async (drive, id, emailAddress) => {
     try {
         let { data } = await drive.permissions.create({
             fileId: id,
@@ -18,7 +23,7 @@ exports.addUser = async (drive, id, emailAddress) => {
     }
 }
 
-exports.appendCloneData = async (sheets, spreadsheetId, cloneData) => {
+appendCloneData = async (sheets, spreadsheetId, cloneData) => {
     const range = 'Sheet1!A2:C';
     const valueInputOption = 'USER_ENTERED';
     const values = [];
@@ -36,3 +41,60 @@ exports.appendCloneData = async (sheets, spreadsheetId, cloneData) => {
     })
     console.log(`Appending data: ${response.status}`);
 }
+
+exports.setUp = async(title) => {
+    let auth = await google.auth.getClient({
+      scopes: ['https://www.googleapis.com/auth/drive.file']
+    });
+    const sheets = google.sheets({ version: 'v4', auth });
+    const drive = google.drive({ version: 'v3', auth });
+  
+    //let id = await createSpreadsheet(sheets, title);
+  
+    // TODO(asrivast): Use IAM, read email from request.  
+    //await utilities.addUser(drive, id, 'gsuite.demos@gmail.com');
+    //await utilities.addUser(drive, id, 'fhinkel.demo@gmail.com');
+  
+    const token = (await fs.readFile('./githubToken.json')).toString().trim();
+    const octokit = new Octokit({ auth: `token ${token}` });
+    console.log(`TOKEN: ${token}`);
+    // CHANGE ME
+    console.log('Fetching github data');
+    let id = '1ygnlp5zwiDU1DFyPMNK2erpK0L4G3fiBFVUe5RUTNRg';
+    /*
+    const cloneData = await githubUtilities.numberOfClones(octokit, 
+      'GoogleCloudPlatform', 'nodejs-getting-started').catch(e => console.error(e));*/
+    try {
+      const cloneData = await githubUtilities.numberOfClones(octokit,
+        'gsuitedevs', 'node-samples');
+      await appendCloneData(sheets, id, cloneData.clones).catch(err => console.error(err));
+    } catch (err) {
+      console.error(`Error: ${err}`);
+      }
+    
+    return id;
+  }
+  
+  /**
+   * Creates a spreadsheet with the given title.
+   */
+  async function createSpreadsheet(sheets, title) {
+    const resource = {
+      properties: {
+        title,
+      }
+    }
+    try {
+      const { data } = await sheets.spreadsheets.create({ resource });
+      console.log(`Created new spreadsheet with ID: ${ data.spreadsheetId } `);
+      return data.spreadsheetId;
+    } catch (err) {
+      console.log(`error: ${ err } `);
+      return err;
+    }
+  }
+  
+  
+  
+  
+  
