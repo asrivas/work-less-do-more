@@ -27,17 +27,22 @@ async function setUp() {
   await utilities.addUser(drive, id, 'gsuite.demos@gmail.com');
   await utilities.addUser(drive, id, 'fhinkel.demo@gmail.com');
 
-  const token = (await fs.readFile('githubToken.json')).toString().trim();
+  const token = (await fs.readFile('./githubToken.json')).toString().trim();
   const octokit = new Octokit({ auth: `token ${token}` });
+  console.log(`TOKEN: ${token}`);
   // CHANGE ME
   console.log('Fetching github data');
   /*
   const cloneData = await githubUtilities.numberOfClones(octokit, 
     'GoogleCloudPlatform', 'nodejs-getting-started').catch(e => console.error(e));*/
-  const cloneData = await githubUtilities.numberOfClones(octokit,
-    'G Suite', 'node-samples')
-    .catch(e => console.error(`Error: ${e}, cloneData: ${cloneData}`));
-  await utilities.appendCloneData(sheets, id, cloneData).catch(e => console.error(e));
+  try {
+    const cloneData = await githubUtilities.numberOfClones(octokit,
+      'gsuitedevs', 'node-samples');
+    await utilities.appendCloneData(sheets, id, cloneData).catch(e => console.error(e));
+  } catch (err) {
+    console.error(`Error: ${e}`);
+    }
+  
   return id;
 }
 
@@ -52,10 +57,10 @@ async function createSpreadsheet(sheets, title) {
   }
   try {
     const { data } = await sheets.spreadsheets.create({ resource });
-    console.log(`Created new spreadsheet with ID: ${data.spreadsheetId}`);
+    console.log(`Created new spreadsheet with ID: ${ data.spreadsheetId } `);
     return data.spreadsheetId;
   } catch (err) {
-    console.log(`error: ${err}`);
+    console.log(`error: ${ err } `);
     return err;
   }
 }
