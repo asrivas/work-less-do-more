@@ -44,7 +44,6 @@ appendCloneData = async (sheets, spreadsheetId, cloneData) => {
 
 exports.setUp = async(title) => {
     let auth = await google.auth.getClient({
-        // CHANGE BACK TO DRIVE.FILE
       scopes: ['https://www.googleapis.com/auth/drive.file']
     });
     const sheets = google.sheets({ version: 'v4', auth });
@@ -59,7 +58,6 @@ exports.setUp = async(title) => {
     const token = (await fs.readFile('./githubToken.json')).toString().trim();
     const octokit = new Octokit({ auth: `token ${token}` });
     console.log('Fetching github data');
-    // let id = '1ygnlp5zwiDU1DFyPMNK2erpK0L4G3fiBFVUe5RUTNRg';
     /*
     const cloneData = await githubUtilities.numberOfClones(octokit, 
       'GoogleCloudPlatform', 'nodejs-getting-started').catch(e => console.error(e));*/
