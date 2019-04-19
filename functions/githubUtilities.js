@@ -8,7 +8,8 @@ exports.numberOfClones = async (octokit, owner, repo) => {
         let { data } = await octokit.repos.getClones({
             owner: owner, repo: repo,
         });
-        console.log(`Clones: ${data.count}`);
+        console.log(`Clones: ${data}`);
+        return data;
     } catch (err) {
         console.error('Could not get Github clones');
         console.error(err);
