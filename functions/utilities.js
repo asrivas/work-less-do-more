@@ -44,23 +44,22 @@ appendCloneData = async (sheets, spreadsheetId, cloneData) => {
 
 exports.setUp = async(title) => {
     let auth = await google.auth.getClient({
+        // CHANGE BACK TO DRIVE.FILE
       scopes: ['https://www.googleapis.com/auth/drive.file']
     });
     const sheets = google.sheets({ version: 'v4', auth });
     const drive = google.drive({ version: 'v3', auth });
   
-    //let id = await createSpreadsheet(sheets, title);
+    let id = await createSpreadsheet(sheets, title);
   
     // TODO(asrivast): Use IAM, read email from request.  
-    //await utilities.addUser(drive, id, 'gsuite.demos@gmail.com');
-    //await utilities.addUser(drive, id, 'fhinkel.demo@gmail.com');
+    await addUser(drive, id, 'gsuite.demos@gmail.com');
+    await addUser(drive, id, 'fhinkel.demo@gmail.com');
   
     const token = (await fs.readFile('./githubToken.json')).toString().trim();
     const octokit = new Octokit({ auth: `token ${token}` });
-    console.log(`TOKEN: ${token}`);
-    // CHANGE ME
     console.log('Fetching github data');
-    let id = '1ygnlp5zwiDU1DFyPMNK2erpK0L4G3fiBFVUe5RUTNRg';
+    // let id = '1ygnlp5zwiDU1DFyPMNK2erpK0L4G3fiBFVUe5RUTNRg';
     /*
     const cloneData = await githubUtilities.numberOfClones(octokit, 
       'GoogleCloudPlatform', 'nodejs-getting-started').catch(e => console.error(e));*/
