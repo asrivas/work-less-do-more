@@ -36,7 +36,7 @@ async function setUp() {
     'GoogleCloudPlatform', 'nodejs-getting-started').catch(e => console.error(e));*/
   const cloneData = await githubUtilities.numberOfClones(octokit,
     'G Suite', 'node-samples').catch(e => console.error(e));
-  await appendCloneData(sheets, id, cloneData);
+  await utilities.appendCloneData(sheets, id, cloneData);
   return id;
 }
 
