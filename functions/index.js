@@ -21,17 +21,18 @@ async function setUp() {
   const sheets = google.sheets({ version: 'v4', auth });
   const drive = google.drive({ version: 'v3', auth });
 
-  const id = await createSpreadsheet(sheets, "Sheet from function");
+  //let id = await createSpreadsheet(sheets, "Sheet from function");
 
   // TODO(asrivast): Use IAM, read email from request.  
-  await utilities.addUser(drive, id, 'gsuite.demos@gmail.com');
-  await utilities.addUser(drive, id, 'fhinkel.demo@gmail.com');
+  //await utilities.addUser(drive, id, 'gsuite.demos@gmail.com');
+  //await utilities.addUser(drive, id, 'fhinkel.demo@gmail.com');
 
   const token = (await fs.readFile('./githubToken.json')).toString().trim();
   const octokit = new Octokit({ auth: `token ${token}` });
   console.log(`TOKEN: ${token}`);
   // CHANGE ME
   console.log('Fetching github data');
+  let id = '1ygnlp5zwiDU1DFyPMNK2erpK0L4G3fiBFVUe5RUTNRg';
   /*
   const cloneData = await githubUtilities.numberOfClones(octokit, 
     'GoogleCloudPlatform', 'nodejs-getting-started').catch(e => console.error(e));*/
