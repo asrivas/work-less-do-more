@@ -51,9 +51,7 @@ exports.setUp = async(title) => {
   
     let id = await createSpreadsheet(sheets, title);
   
-    // TODO(asrivast): Use IAM, read email from request.  
-    await addUser(drive, id, 'gsuite.demos@gmail.com');
-    await addUser(drive, id, 'fhinkel.demo@gmail.com');
+ 
   
     const token = (await fs.readFile('./githubToken.json')).toString().trim();
     const octokit = new Octokit({ auth: `token ${token}` });
@@ -67,6 +65,10 @@ exports.setUp = async(title) => {
       console.error(`Error: ${err}`);
       }
     
+    //  TODO(asrivast): Use IAM, read email from request.  
+    await addUser(drive, id, 'gsuite.demos@gmail.com');
+    await addUser(drive, id, 'fhinkel.demo@gmail.com');
+
     return id;
   }
   

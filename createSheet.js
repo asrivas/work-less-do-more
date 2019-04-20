@@ -135,17 +135,17 @@ const main = async () => {
 
     const drive = google.drive({ version: 'v3', auth })
 
-    // await deleteAllFiles(drive);
-    const title = 'Statistics from GitHub and food survey for I/O talk';
-    let id = await checkForSheet(drive, title);
-    if (!id) {
-        id = await createSpreadsheet(sheets, title);
-        await writeHeader(sheets, id, 0);
-        await addUser(drive, id, 'fhinkel.demo@gmail.com');
-        await addUser(drive, id, 'GSuite.demos@gmail.com');
-    }
-    let cloneData = await numberOfClones(octokit);
-    await appendCloneData(sheets, id, cloneData);
+    await deleteAllFiles(drive);
+    // const title = 'Statistics from GitHub and food survey for I/O talk';
+    // let id = await checkForSheet(drive, title);
+    // if (!id) {
+    //     id = await createSpreadsheet(sheets, title);
+    //     await writeHeader(sheets, id, 0);
+    //     await addUser(drive, id, 'fhinkel.demo@gmail.com');
+    //     await addUser(drive, id, 'GSuite.demos@gmail.com');
+    // }
+    // let cloneData = await numberOfClones(octokit);
+    // await appendCloneData(sheets, id, cloneData);
 }
 
 
