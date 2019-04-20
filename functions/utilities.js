@@ -58,12 +58,10 @@ exports.setUp = async(title) => {
     const token = (await fs.readFile('./githubToken.json')).toString().trim();
     const octokit = new Octokit({ auth: `token ${token}` });
     console.log('Fetching github data');
-    /*
-    const cloneData = await githubUtilities.numberOfClones(octokit, 
-      'GoogleCloudPlatform', 'nodejs-getting-started').catch(e => console.error(e));*/
+   
     try {
-      const cloneData = await githubUtilities.numberOfClones(octokit,
-        'gsuitedevs', 'node-samples');
+      const cloneData = await githubUtilities.numberOfClones(octokit, 
+        'GoogleCloudPlatform', 'nodejs-getting-started');
       await appendCloneData(sheets, id, cloneData.clones).catch(err => console.error(err));
     } catch (err) {
       console.error(`Error: ${err}`);
