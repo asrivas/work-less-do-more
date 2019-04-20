@@ -28,7 +28,8 @@ appendCloneData = async (sheets, spreadsheetId, cloneData) => {
   const valueInputOption = 'USER_ENTERED';
   const values = [];
   for (const entry of cloneData) {
-    values.push([entry.timestamp, , entry.uniques]);
+      let date = entry.timestamp.split('T')[0];
+    values.push([date, , entry.uniques]);
   }
 
   const response = await sheets.spreadsheets.values.append({
@@ -122,7 +123,7 @@ async function getSheetId(sheets, spreadsheetId) {
   return sheetId;
 }
 
-async function createChart(sheets, spreadsheetId, endRowInd) {
+async function createChart(sheets, spreadsheetId, endRowIndex) {
   const sheetId = await getSheetId(sheets, spreadsheetId);
   const requests = [{
     addChart: {
@@ -167,7 +168,7 @@ async function createChart(sheets, spreadsheetId, endRowInd) {
                       {
                         "sheetId": sheetId,
                         "startRowIndex": 0,
-                        "endRowIndex": endRowInd,
+                        "endRowIndex": endRowIndex,
                         "startColumnIndex": 0,
                         "endColumnIndex": 1
                       }
@@ -183,7 +184,7 @@ async function createChart(sheets, spreadsheetId, endRowInd) {
                       {
                         "sheetId": sheetId,
                         "startRowIndex": 0,
-                        "endRowIndex": endRowInd,
+                        "endRowIndex": endRowIndex,
                         "startColumnIndex": 2,
                         "endColumnIndex": 3
                       }
