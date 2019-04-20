@@ -24,7 +24,7 @@ addUser = async (drive, id, emailAddress) => {
 }
 
 appendCloneData = async (sheets, spreadsheetId, cloneData) => {
-    const range = 'Sheet1!A2:C';
+    const range = 'Sheet1!A2';
     const valueInputOption = 'USER_ENTERED';
     const values = [];
     for (const entry of cloneData) {
@@ -49,7 +49,7 @@ exports.setUp = async(title) => {
     const sheets = google.sheets({ version: 'v4', auth });
     const drive = google.drive({ version: 'v3', auth });
   
-    let id = await checkForSheet(drive, title);
+    let id = await idOfSheet(drive, title);
     if(!id) {
       id = await createSpreadsheet(sheets, title);
     }
@@ -93,7 +93,7 @@ exports.setUp = async(title) => {
   }
   
 
-  const checkForSheet = async (drive, title) => {
+  const idOfSheet = async (drive, title) => {
     try {
         let { data } = await drive.files.list();
         for (const file of data.files) {
