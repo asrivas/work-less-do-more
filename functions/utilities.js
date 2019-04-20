@@ -38,8 +38,10 @@ appendCloneData = async (sheets, spreadsheetId, cloneData) => {
     resource: {
       values
     }
-  })
+  });
+  const updatedRange = response.data.updates.updatedRange;
   console.log(`Appending data: ${response.status}`);
+  return Number(updatedRange.split(':')[1].split('C')[1]);
 }
 
 exports.setUp = async (title) => {
@@ -61,12 +63,13 @@ exports.setUp = async (title) => {
   try {
     const cloneData = await githubUtilities.numberOfClones(octokit,
       'GoogleCloudPlatform', 'nodejs-getting-started');
-    await appendCloneData(sheets, id, cloneData.clones).catch(err => console.error(err));
+    const lastRow = await appendCloneData(sheets, id, cloneData.clones).catch(err => console.error(err));
+    console.log(lastRow);
+    await createChart(sheets, id, lastRow);
   } catch (err) {
     console.error(`Error: ${err}`);
   }
 
-  await createChart(sheets, id);
 
   //  TODO(asrivast): Use IAM, read email from request.  
   await addUser(drive, id, 'gsuite.demos@gmail.com');
@@ -119,7 +122,7 @@ async function getSheetId(sheets, spreadsheetId) {
   return sheetId;
 }
 
-async function createChart(sheets, spreadsheetId) {
+async function createChart(sheets, spreadsheetId, endRowInd) {
   const sheetId = await getSheetId(sheets, spreadsheetId);
   const requests = [{
     addChart: {
@@ -164,7 +167,7 @@ async function createChart(sheets, spreadsheetId) {
                       {
                         "sheetId": sheetId,
                         "startRowIndex": 0,
-                        "endRowIndex": 20,
+                        "endRowIndex": endRowInd,
                         "startColumnIndex": 0,
                         "endColumnIndex": 1
                       }
@@ -180,7 +183,7 @@ async function createChart(sheets, spreadsheetId) {
                       {
                         "sheetId": sheetId,
                         "startRowIndex": 0,
-                        "endRowIndex": 20,
+                        "endRowIndex": endRowInd,
                         "startColumnIndex": 2,
                         "endColumnIndex": 3
                       }
