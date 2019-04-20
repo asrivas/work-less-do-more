@@ -143,23 +143,6 @@ async function createChart(sheets, spreadsheetId, endRowIndex) {
                                 "title": "Number of Clones"
                             }
                         ],
-                        // "domains": [
-                        //   {
-                        //     "domain": {
-                        //       "sourceRange": {
-                        //         "sources": [
-                        //           {
-                        //             "sheetId": sheetId,
-                        //             "startRowIndex": 0,
-                        //             "endRowIndex": 7,
-                        //             "startColumnIndex": 0,
-                        //             "endColumnIndex": 1
-                        //           }
-                        //         ]
-                        //       }
-                        //     }
-                        //   }
-                        // ],
                         "series": [
                             {
                                 "series": {
@@ -225,6 +208,8 @@ async function updateCellFormatToDate(sheets, spreadsheetId, githubLastRowIndex)
                 sheetId: formResponsesSheetId,
                 startRowIndex: 0,
                 endRowIndex: githubLastRowIndex,
+                startColumnIndex: 0,
+                endColumnIndex: 1
             },
             cell: {
                 userEnteredFormat: {
@@ -240,6 +225,8 @@ async function updateCellFormatToDate(sheets, spreadsheetId, githubLastRowIndex)
                 sheetId: githubSheetId,
                 startRowIndex: 0,
                 endRowIndex: githubLastRowIndex,
+                startColumnIndex: 0,
+                endColumnIndex: 1
             },
             cell: {
                 userEnteredFormat: {
