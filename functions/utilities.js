@@ -49,9 +49,10 @@ exports.setUp = async(title) => {
     const sheets = google.sheets({ version: 'v4', auth });
     const drive = google.drive({ version: 'v3', auth });
   
-    let id = await createSpreadsheet(sheets, title);
-  
- 
+    let id = await checkForSheet(drive, title);
+    if(!id) {
+      id = await createSpreadsheet(sheets, title);
+    }
   
     const token = (await fs.readFile('./githubToken.json')).toString().trim();
     const octokit = new Octokit({ auth: `token ${token}` });
@@ -91,6 +92,21 @@ exports.setUp = async(title) => {
     }
   }
   
+
+  const checkForSheet = async (drive, title) => {
+    try {
+        let { data } = await drive.files.list();
+        for (const file of data.files) {
+            if (file.name === title) {
+                console.log(`Using existing file: ${file.id}`);
+                return file.id;
+            }
+        }
+    } catch (err) {
+        console.log('Listing files failed.')
+        console.log(err);
+    }
+}
   
   
   
