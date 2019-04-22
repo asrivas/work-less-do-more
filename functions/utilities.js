@@ -62,6 +62,10 @@ exports.setUp = async (title) => {
     console.log('Fetching github data');
 
     try {
+        const issues = await githubUtilities.numberOfIssues(octokit,
+            'nodejs', 'node');
+            return;
+
         const cloneData = await githubUtilities.numberOfClones(octokit,
             'GoogleCloudPlatform', 'nodejs-getting-started');
         const lastRowIndex = await appendCloneData(sheets, id, cloneData.clones).catch(err => console.error(err));
@@ -70,7 +74,6 @@ exports.setUp = async (title) => {
     } catch (err) {
         console.error(`Error: ${err}`);
     }
-
 
     //  TODO(asrivast): Use IAM, read email from request.  
     await addUser(drive, id, 'gsuite.demos@gmail.com');
