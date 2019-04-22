@@ -62,10 +62,15 @@ exports.setUp = async (title) => {
   console.log('Fetching github data');
 
   try {
-    const [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfIssuesAndPrs(octokit,
-      'nodejs', 'node');
+    let [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfIssuesAndPrs(octokit,
+      'GoogleCloudPlatform', 'nodejs-getting-started');
     console.log(`Number of open issues: ${numberOfIssues}`);
     console.log(`Number of open PRs: ${numberOfPRs}`);
+
+    [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfClosedIssues(octokit,
+      'GoogleCloudPlatform', 'nodejs-getting-started');
+    console.log(`Number of closed issues: ${numberOfIssues}`);
+    console.log(`Number of closed PRs: ${numberOfPRs}`);
 
     return;
 

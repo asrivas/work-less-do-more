@@ -36,3 +36,23 @@ exports.numberOfIssuesAndPrs = async (octokit, owner, repo) => {
     console.error(err);
   }
 }
+
+
+exports.numberOfClosedIssues = async (octokit, owner, repo) => {
+  console.log(`Fetching number of issues for repo: ${repo}`);
+  try {
+    const options = await octokit.issues.listForRepo.endpoint.merge({
+      owner,
+      repo,
+      state: 'closed'
+    });
+    const issues = await octokit.paginate(options);
+    console.log(`Found ${issues.length} issues`);
+    let prs = issues.filter(entry => entry.pull_request);
+    console.log(issues[0]);
+    return [issues.length - prs.length, prs.length];
+  } catch (err) {
+    console.error('Could not get closed Github issues');
+    console.error(err);
+  }
+}
