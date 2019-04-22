@@ -20,7 +20,7 @@ exports.numberOfClones = async (octokit, owner, repo) => {
 /**
  * Returns the number of issues for repo.
  */
-exports.numberOfIssues = async (octokit, owner, repo) => {
+exports.numberOfIssuesAndPrs = async (octokit, owner, repo) => {
   console.log(`Fetching number of issues for repo: ${repo}`);
   try {
     const options = await octokit.issues.listForRepo.endpoint.merge({
@@ -30,7 +30,7 @@ exports.numberOfIssues = async (octokit, owner, repo) => {
     const issues = await octokit.paginate(options);
     console.log(`Found ${issues.length} issues`);
     let prs = issues.filter(entry => entry.pull_request);
-    return issues.length - prs.length;
+    return [issues.length - prs.length, prs.length];
   } catch (err) {
     console.error('Could not get Github issues');
     console.error(err);

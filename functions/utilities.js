@@ -62,9 +62,11 @@ exports.setUp = async (title) => {
   console.log('Fetching github data');
 
   try {
-    const numberOfIssues = await githubUtilities.numberOfIssues(octokit,
+    const [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfIssuesAndPrs(octokit,
       'nodejs', 'node');
     console.log(`Number of open issues: ${numberOfIssues}`);
+    console.log(`Number of open PRs: ${numberOfPRs}`);
+
     return;
 
     const cloneData = await githubUtilities.numberOfClones(octokit,
