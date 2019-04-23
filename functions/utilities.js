@@ -1,9 +1,4 @@
-const { google } = require('googleapis');
-const Octokit = require('@octokit/rest');
-const githubUtilities = require('./githubUtilities');
-const fs = require('fs').promises;
-
-addUser = async (drive, id, emailAddress) => {
+exports.addUser = async (drive, id, emailAddress) => {
   try {
     let { data } = await drive.permissions.create({
       fileId: id,
@@ -23,7 +18,7 @@ addUser = async (drive, id, emailAddress) => {
   }
 }
 
-appendTodaysDate = async (sheets, spreadsheetId) => {
+exports.appendTodaysDate = async (sheets, spreadsheetId) => {
   let today = new Date();
   today.setHours(0, 0, 0, 0);
   const range = 'Github Data!A2';
@@ -40,13 +35,14 @@ appendTodaysDate = async (sheets, spreadsheetId) => {
     }
   });
   const updatedRange = response.data.updates.updatedRange;
+  console.log(updatedRange)
   let [from, to] = updatedRange.split(':');
   let lastCell = Number(from.split('!A')[1]);
   console.log(`Appending date in cell: ${lastCell}`);
   return Number(lastCell);
 }
 
-appendCloneData = async (sheets, spreadsheetId, cloneData) => {
+exports.appendCloneData = async (sheets, spreadsheetId, cloneData) => {
   const range = 'Sheet1!A2';
   const valueInputOption = 'USER_ENTERED';
   const values = [];
@@ -68,63 +64,11 @@ appendCloneData = async (sheets, spreadsheetId, cloneData) => {
   return Number(updatedRange.split(':')[1].split('C')[1]);
 }
 
-exports.setUp = async (title) => {
-  let auth = await google.auth.getClient({
-    scopes: ['https://www.googleapis.com/auth/drive.file']
-  });
-  const sheets = google.sheets({ version: 'v4', auth });
-  const drive = google.drive({ version: 'v3', auth });
-
-  let id = await idOfSheet(drive, title);
-  let newSheet;
-  if (!id) {
-    id = await createSpreadsheet(sheets, title);
-    newSheet = true;
-  }
-
-  const token = (await fs.readFile('./githubToken.json')).toString().trim();
-  const octokit = new Octokit({ auth: `token ${token}` });
-  console.log('Fetching github data');
-
-  try {
-    // let [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfIssuesAndPrs(octokit,
-    //   'GoogleCloudPlatform', 'nodejs-getting-started');
-    // console.log(`Number of open issues: ${numberOfIssues}`);
-    // console.log(`Number of open PRs: ${numberOfPRs}`);
-
-    // [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfClosedIssues(octokit,
-    //   'GoogleCloudPlatform', 'nodejs-getting-started');
-    // console.log(`Number of closed issues: ${numberOfIssues}`);
-    // console.log(`Number of closed PRs: ${numberOfPRs}`);
-
-    // let closedIssues = await githubUtilities.numberOfClosedIssuesYesterday(octokit,
-    //     'GoogleCloudPlatform', 'nodejs-getting-started');
-    // console.log(`Number of closed issues yesterday: ${closedIssues}`);
-    appendTodaysDate(sheets, id);
-    return;
-
-    const cloneData = await githubUtilities.numberOfClones(octokit,
-      'GoogleCloudPlatform', 'nodejs-getting-started');
-    const lastRowIndex = await appendCloneData(sheets, id, cloneData.clones).catch(err => console.error(err));
-    await updateCellFormatToDate(sheets, id, lastRowIndex);
-    await createChart(sheets, id, lastRowIndex);
-  } catch (err) {
-    console.error(`Error: ${err}`);
-  }
-
-  if (newSheet) {
-    //  TODO(asrivast): Use IAM, read email from request.  
-    await addUser(drive, id, 'gsuite.demos@gmail.com');
-    await addUser(drive, id, 'fhinkel.demo@gmail.com');
-  }
-
-  return id;
-}
 
 /**
  * Creates a spreadsheet with the given title.
  */
-async function createSpreadsheet(sheets, title) {
+exports.createSpreadsheet = async (sheets, title) => {
   const resource = {
     properties: {
       title,
@@ -140,8 +84,7 @@ async function createSpreadsheet(sheets, title) {
   }
 }
 
-
-const idOfSheet = async (drive, title) => {
+exports.idOfSheet = async (drive, title) => {
   try {
     let { data } = await drive.files.list();
     for (const file of data.files) {
@@ -156,7 +99,7 @@ const idOfSheet = async (drive, title) => {
   }
 }
 
-async function getSheetId(sheets, spreadsheetId, index) {
+exports.getSheetId = async (sheets, spreadsheetId, index) => {
   const { data } = await sheets.spreadsheets.get({
     spreadsheetId,
   });
@@ -165,7 +108,7 @@ async function getSheetId(sheets, spreadsheetId, index) {
   return sheetId;
 }
 
-async function createChart(sheets, spreadsheetId, endRowIndex) {
+exports.createChart = async (sheets, spreadsheetId, endRowIndex) => {
   const sheetId = await getSheetId(sheets, spreadsheetId, 1);
   const requests = [{
     addChart: {
@@ -240,7 +183,7 @@ async function createChart(sheets, spreadsheetId, endRowIndex) {
   console.log('Chart created with Id: ' + response.data.replies[0].addChart.chart.chartId);
 }
 
-async function updateCellFormatToDate(sheets, spreadsheetId, githubLastRowIndex) {
+exports.updateCellFormatToDate = async(sheets, spreadsheetId, githubLastRowIndex) => {
   const formResponsesSheetId = await getSheetId(sheets, spreadsheetId, 0);
   const githubSheetId = await getSheetId(sheets, spreadsheetId, 1);
 

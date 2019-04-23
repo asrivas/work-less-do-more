@@ -1,8 +1,4 @@
-const utilities = require('./utilities');
+const sheet = require('./sheet');
 
-// If the title already exists, we run into problems
-// when sharing later. 
-let date = new Date();
 let title = "IO from Local";
-console.log(title);
-utilities.setUp(title).then((id) => console.log(id));
+sheet.main(title).then((id) => console.log(id));
