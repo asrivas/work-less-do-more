@@ -62,16 +62,18 @@ exports.setUp = async (title) => {
   console.log('Fetching github data');
 
   try {
-    let [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfIssuesAndPrs(octokit,
-      'GoogleCloudPlatform', 'nodejs-getting-started');
-    console.log(`Number of open issues: ${numberOfIssues}`);
-    console.log(`Number of open PRs: ${numberOfPRs}`);
+    // let [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfIssuesAndPrs(octokit,
+    //   'GoogleCloudPlatform', 'nodejs-getting-started');
+    // console.log(`Number of open issues: ${numberOfIssues}`);
+    // console.log(`Number of open PRs: ${numberOfPRs}`);
 
-    [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfClosedIssues(octokit,
-      'GoogleCloudPlatform', 'nodejs-getting-started');
-    console.log(`Number of closed issues: ${numberOfIssues}`);
-    console.log(`Number of closed PRs: ${numberOfPRs}`);
+    // [numberOfIssues, numberOfPRs] = await githubUtilities.numberOfClosedIssues(octokit,
+    //   'GoogleCloudPlatform', 'nodejs-getting-started');
+    // console.log(`Number of closed issues: ${numberOfIssues}`);
+    // console.log(`Number of closed PRs: ${numberOfPRs}`);
 
+    let closedIssues = await githubUtilities.numberOfClosedIssuesYesterday(octokit, 'GoogleCloudPlatform', 'nodejs-getting-started')
+    console.log(`Number of closed issues yesterday: ${closedIssues}`);
     return;
 
     const cloneData = await githubUtilities.numberOfClones(octokit,

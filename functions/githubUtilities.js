@@ -17,9 +17,7 @@ exports.numberOfClones = async (octokit, owner, repo) => {
   }
 }
 
-/**
- * Returns the number of issues for repo.
- */
+// open issues and PRs
 exports.numberOfIssuesAndPrs = async (octokit, owner, repo) => {
   console.log(`Fetching number of issues for repo: ${repo}`);
   try {
@@ -37,7 +35,7 @@ exports.numberOfIssuesAndPrs = async (octokit, owner, repo) => {
   }
 }
 
-
+// Since the beginning of time
 exports.numberOfClosedIssues = async (octokit, owner, repo) => {
   console.log(`Fetching number of issues for repo: ${repo}`);
   try {
@@ -51,6 +49,37 @@ exports.numberOfClosedIssues = async (octokit, owner, repo) => {
     let prs = issues.filter(entry => entry.pull_request);
     console.log(issues[0]);
     return [issues.length - prs.length, prs.length];
+  } catch (err) {
+    console.error('Could not get closed Github issues');
+    console.error(err);
+  }
+}
+
+exports.numberOfClosedIssuesYesterday = async (octokit, owner, repo) => {
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let yesterday = new Date(today.setDate(today.getDate() - 10));
+  console.log(`Fetching number of closed issues for repo: ${repo}`);
+  try {
+    const options = await octokit.issues.listForRepo.endpoint.merge({
+      owner,
+      repo,
+      state: 'closed',
+      since: yesterday.toISOString(),
+    });
+    const issuesAndPrs = await octokit.paginate(options);
+    console.log(`Found ${issuesAndPrs.length} issues and PRs`);
+    let issues = issuesAndPrs.filter(entry => !entry.pull_request);
+    issues = issues.filter(issue => {
+      const closedAt = new Date(issue.closed_at);
+      if (closedAt.getTime() > yesterday.getTime()
+        && closedAt.getTime() < today.getTime()) {
+        return true;
+      }
+      return false
+    })
+    console.log(issues[0]);
+    return issues.length;
   } catch (err) {
     console.error('Could not get closed Github issues');
     console.error(err);
