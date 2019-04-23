@@ -58,7 +58,9 @@ exports.numberOfClosedIssues = async (octokit, owner, repo) => {
 exports.numberOfClosedIssuesYesterday = async (octokit, owner, repo) => {
   let today = new Date();
   today.setHours(0, 0, 0, 0);
-  let yesterday = new Date(today.setDate(today.getDate() - 10));
+  let date = new Date();
+  today.setHours(0, 0, 0, 0);
+  let yesterday = new Date(date.setDate(date.getDate() - 1));
   console.log(`Fetching number of closed issues for repo: ${repo}`);
   try {
     const options = await octokit.issues.listForRepo.endpoint.merge({
@@ -70,15 +72,15 @@ exports.numberOfClosedIssuesYesterday = async (octokit, owner, repo) => {
     const issuesAndPrs = await octokit.paginate(options);
     console.log(`Found ${issuesAndPrs.length} issues and PRs`);
     let issues = issuesAndPrs.filter(entry => !entry.pull_request);
+
     issues = issues.filter(issue => {
       const closedAt = new Date(issue.closed_at);
-      if (closedAt.getTime() > yesterday.getTime()
-        && closedAt.getTime() < today.getTime()) {
+      if ((closedAt.getTime() > yesterday.getTime())
+        && (closedAt.getTime() < today.getTime())) {
         return true;
       }
       return false
     })
-    console.log(issues[0]);
     return issues.length;
   } catch (err) {
     console.error('Could not get closed Github issues');
