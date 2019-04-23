@@ -24,25 +24,25 @@ addUser = async (drive, id, emailAddress) => {
 }
 
 appendTodaysDate = async (sheets, spreadsheetId) => {
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const range = 'Github Data!A2';
-    const valueInputOption = 'USER_ENTERED';
-    const values = [];
-    values.push([today.toISOString()]);
-  
-    const response = await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range,
-      valueInputOption,
-      resource: {
-        values
-      }
-    });
-    const updatedRange = response.data.updates.updatedRange;
-    let lastRow = updatedRange.split(':')[1].split('A')[1];
-    console.log(`Appending date to row: ${lastRow}`);
-    return Number(lastRow);
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const range = 'Github Data!A2';
+  const valueInputOption = 'USER_ENTERED';
+  const values = [];
+  values.push([today.toISOString()]);
+
+  const response = await sheets.spreadsheets.values.append({
+    spreadsheetId,
+    range,
+    valueInputOption,
+    resource: {
+      values
+    }
+  });
+  const updatedRange = response.data.updates.updatedRange;
+  let lastRow = updatedRange.split(':')[1].split('A')[1];
+  console.log(`Appending date to row: ${lastRow}`);
+  return Number(lastRow);
 }
 
 appendCloneData = async (sheets, spreadsheetId, cloneData) => {
@@ -110,8 +110,8 @@ exports.setUp = async (title) => {
   }
 
   //  TODO(asrivast): Use IAM, read email from request.  
-//   await addUser(drive, id, 'gsuite.demos@gmail.com');
-//   await addUser(drive, id, 'fhinkel.demo@gmail.com');
+  //   await addUser(drive, id, 'gsuite.demos@gmail.com');
+  //   await addUser(drive, id, 'fhinkel.demo@gmail.com');
 
   return id;
 }
