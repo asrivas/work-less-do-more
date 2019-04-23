@@ -23,6 +23,28 @@ addUser = async (drive, id, emailAddress) => {
   }
 }
 
+appendTodaysDate = async (sheets, spreadsheetId) => {
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const range = 'Github Data!A2';
+    const valueInputOption = 'USER_ENTERED';
+    const values = [];
+    values.push([today.toISOString()]);
+  
+    const response = await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range,
+      valueInputOption,
+      resource: {
+        values
+      }
+    });
+    const updatedRange = response.data.updates.updatedRange;
+    let lastRow = updatedRange.split(':')[1].split('A')[1];
+    console.log(`Appending date to row: ${lastRow}`);
+    return Number(lastRow);
+}
+
 appendCloneData = async (sheets, spreadsheetId, cloneData) => {
   const range = 'Sheet1!A2';
   const valueInputOption = 'USER_ENTERED';
@@ -46,16 +68,16 @@ appendCloneData = async (sheets, spreadsheetId, cloneData) => {
 }
 
 exports.setUp = async (title) => {
-  // let auth = await google.auth.getClient({
-  //   scopes: ['https://www.googleapis.com/auth/drive.file']
-  // });
-  // const sheets = google.sheets({ version: 'v4', auth });
-  // const drive = google.drive({ version: 'v3', auth });
+  let auth = await google.auth.getClient({
+    scopes: ['https://www.googleapis.com/auth/drive.file']
+  });
+  const sheets = google.sheets({ version: 'v4', auth });
+  const drive = google.drive({ version: 'v3', auth });
 
-  // let id = await idOfSheet(drive, title);
-  // if (!id) {
-  //   id = await createSpreadsheet(sheets, title);
-  // }
+  let id = await idOfSheet(drive, title);
+  if (!id) {
+    id = await createSpreadsheet(sheets, title);
+  }
 
   const token = (await fs.readFile('./githubToken.json')).toString().trim();
   const octokit = new Octokit({ auth: `token ${token}` });
@@ -72,9 +94,10 @@ exports.setUp = async (title) => {
     // console.log(`Number of closed issues: ${numberOfIssues}`);
     // console.log(`Number of closed PRs: ${numberOfPRs}`);
 
-    let closedIssues = await githubUtilities.numberOfClosedIssuesYesterday(octokit,
-       'nodejs', 'node')
-    console.log(`Number of closed issues yesterday: ${closedIssues}`);
+    // let closedIssues = await githubUtilities.numberOfClosedIssuesYesterday(octokit,
+    //     'GoogleCloudPlatform', 'nodejs-getting-started');
+    // console.log(`Number of closed issues yesterday: ${closedIssues}`);
+    appendTodaysDate(sheets, id);
     return;
 
     const cloneData = await githubUtilities.numberOfClones(octokit,
@@ -87,8 +110,8 @@ exports.setUp = async (title) => {
   }
 
   //  TODO(asrivast): Use IAM, read email from request.  
-  await addUser(drive, id, 'gsuite.demos@gmail.com');
-  await addUser(drive, id, 'fhinkel.demo@gmail.com');
+//   await addUser(drive, id, 'gsuite.demos@gmail.com');
+//   await addUser(drive, id, 'fhinkel.demo@gmail.com');
 
   return id;
 }
