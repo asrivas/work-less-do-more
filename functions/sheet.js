@@ -1,8 +1,11 @@
+const fs = require('fs').promises;
+
+const { google } = require('googleapis');
+const Octokit = require('@octokit/rest');
+
 const sheetHelpers = require('./utilities');
 const gitHubHelpers = require('./githubUtilities');
-const { google } = require('googleapis');
-const fs = require('fs').promises;
-const Octokit = require('@octokit/rest');
+const driveHelpers = require('./driveHelpers');
 
 exports.main = async (title) => {
   let auth = await google.auth.getClient({
@@ -11,7 +14,7 @@ exports.main = async (title) => {
   const sheets = google.sheets({ version: 'v4', auth });
   const drive = google.drive({ version: 'v3', auth });
 
-  let id = await sheetHelpers.idOfSheet(drive, title);
+  let id = await driveHelpers.idOfSheet(drive, title);
   let newSheet;
   if (!id) {
     id = await sheetHelpers.createSpreadsheet(sheets, title);
@@ -50,8 +53,8 @@ exports.main = async (title) => {
 
   if (newSheet) {
     //  TODO(asrivast): Use IAM, read email from request.  
-    await sheetHelpers.addUser(drive, id, 'gsuite.demos@gmail.com');
-    await sheetHelpers.addUser(drive, id, 'fhinkel.demo@gmail.com');
+    await driveHelpers.addUser(drive, id, 'gsuite.demos@gmail.com');
+    await driveHelpers.addUser(drive, id, 'fhinkel.demo@gmail.com');
   }
 
   return id;
