@@ -40,9 +40,10 @@ appendTodaysDate = async (sheets, spreadsheetId) => {
     }
   });
   const updatedRange = response.data.updates.updatedRange;
-  let lastRow = updatedRange.split(':')[1].split('A')[1];
-  console.log(`Appending date to row: ${lastRow}`);
-  return Number(lastRow);
+  let [from, to] = updatedRange.split(':');
+  let lastCell = Number(from.split('!A')[1]);
+  console.log(`Appending date in cell: ${lastCell}`);
+  return Number(lastCell);
 }
 
 appendCloneData = async (sheets, spreadsheetId, cloneData) => {
