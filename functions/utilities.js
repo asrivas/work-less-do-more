@@ -75,8 +75,10 @@ exports.setUp = async (title) => {
   const drive = google.drive({ version: 'v3', auth });
 
   let id = await idOfSheet(drive, title);
+  let newSheet;
   if (!id) {
     id = await createSpreadsheet(sheets, title);
+    newSheet = true;
   }
 
   const token = (await fs.readFile('./githubToken.json')).toString().trim();
@@ -109,9 +111,11 @@ exports.setUp = async (title) => {
     console.error(`Error: ${err}`);
   }
 
-  //  TODO(asrivast): Use IAM, read email from request.  
-  //   await addUser(drive, id, 'gsuite.demos@gmail.com');
-  //   await addUser(drive, id, 'fhinkel.demo@gmail.com');
+  if (newSheet) {
+    //  TODO(asrivast): Use IAM, read email from request.  
+    await addUser(drive, id, 'gsuite.demos@gmail.com');
+    await addUser(drive, id, 'fhinkel.demo@gmail.com');
+  }
 
   return id;
 }
