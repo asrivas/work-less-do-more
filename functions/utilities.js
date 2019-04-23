@@ -72,7 +72,8 @@ exports.setUp = async (title) => {
     // console.log(`Number of closed issues: ${numberOfIssues}`);
     // console.log(`Number of closed PRs: ${numberOfPRs}`);
 
-    let closedIssues = await githubUtilities.numberOfClosedIssuesYesterday(octokit, 'GoogleCloudPlatform', 'nodejs-getting-started')
+    let closedIssues = await githubUtilities.numberOfClosedIssuesYesterday(octokit,
+       'nodejs', 'node')
     console.log(`Number of closed issues yesterday: ${closedIssues}`);
     return;
 
