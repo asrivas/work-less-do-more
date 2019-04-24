@@ -11,18 +11,23 @@ exports.main = async (title) => {
   const DriveHelpers = require('./driveHelpers')(auth);
   const driveHelpers = new DriveHelpers();
 
-  let id = await driveHelpers.idOfSheet(title);
   let newSheet;
-  if (!id) {
-    id = await sheetHelpers.createSpreadsheet(title);
-    newSheet = true;
+  let id;
+  try {
+    id = await driveHelpers.idOfSheet(title);
+    if (!id) {
+      id = await sheetHelpers.createSpreadsheet(title);
+      newSheet = true;
+    }
+  } catch (err) {
+    console.error(`Error: ${err}`);
   }
 
   const GitHubHelpers = require('./githubUtilities')('./githubToken.json');
   const gitHubHelpers = new GitHubHelpers();
-  await gitHubHelpers.init();
 
   try {
+    await gitHubHelpers.init();
     let [numberOfIssues, numberOfPRs] = await gitHubHelpers.numberOfIssuesAndPrs(
       'GoogleCloudPlatform', 'nodejs-getting-started');
     console.log(`Number of open issues: ${numberOfIssues}`);
@@ -36,22 +41,25 @@ exports.main = async (title) => {
     let closedIssues = await gitHubHelpers.numberOfClosedIssuesYesterday(
       'GoogleCloudPlatform', 'nodejs-getting-started');
     console.log(`Number of closed issues yesterday: ${closedIssues}`);
+
     sheetHelpers.appendTodaysDate(id);
 
     const cloneData = await gitHubHelpers.numberOfClones(
       'GoogleCloudPlatform', 'nodejs-getting-started');
+
     const lastRowIndex = await sheetHelpers.appendCloneData(id, cloneData.clones)
       .catch(err => console.error(err));
+
     await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
     await sheetHelpers.createChart(id, lastRowIndex);
+
+    if (newSheet) {
+      //  TODO(asrivast): Use IAM, read email from request.  
+      await driveHelpers.addUser(id, 'gsuite.demos@gmail.com');
+      await driveHelpers.addUser(id, 'fhinkel.demo@gmail.com');
+    }
   } catch (err) {
     console.error(`Error: ${err}`);
-  }
-
-  if (newSheet) {
-    //  TODO(asrivast): Use IAM, read email from request.  
-    await driveHelpers.addUser(id, 'gsuite.demos@gmail.com');
-    await driveHelpers.addUser(id, 'fhinkel.demo@gmail.com');
   }
 
   return id;

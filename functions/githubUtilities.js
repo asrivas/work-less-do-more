@@ -65,7 +65,6 @@ module.exports = (filename) => {
         const issues = await this.octokit.paginate(options);
         console.log(`Found ${issues.length} issues`);
         let prs = issues.filter(entry => entry.pull_request);
-        console.log(issues[0]);
         return [issues.length - prs.length, prs.length];
       } catch (err) {
         console.error('Could not get closed Github issues');
