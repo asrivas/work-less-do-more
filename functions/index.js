@@ -1,4 +1,4 @@
-const utilities = require('./utilities');
+const sheet = require('./sheet');
 
 /**
  * Updates data into the chart from Github and mails a chart.
@@ -7,5 +7,5 @@ const utilities = require('./utilities');
  * @param {!express:Response} res HTTP response context.
  */
 exports.githubChart = (req, res) => {
-  utilities.setUp("Test Title IO GCF").then((id) => res.status(200).send(id));
+  sheet.main("Test Title IO GCF").then((id) => res.status(200).send(id));
 };
