@@ -210,7 +210,7 @@ module.exports = function (auth) {
 
     async updateCellFormatToDate(spreadsheetId, githubLastRowIndex) {
       const formResponsesSheetId = await this.getSheetId(spreadsheetId, 0);
-      const githubSheetId = await this.getSheetId(spreadsheetId, 1);
+      const githubSheetId = await this.getSheetId(spreadsheetId, 3);
 
       const requests = [{
         repeatCell: {
