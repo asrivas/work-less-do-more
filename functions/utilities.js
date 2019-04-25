@@ -15,7 +15,9 @@ module.exports = function (auth) {
       const range = 'Github Data!A2';
       const valueInputOption = 'USER_ENTERED';
       const values = [];
-      values.push([today.toISOString()]);
+      today = today.toISOString().split('T')[0];
+      console.log(`Split Date: ${today}`);
+      values.push([today]);
 
       const response = await this.sheets.spreadsheets.values.append({
         spreadsheetId,
