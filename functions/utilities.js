@@ -9,15 +9,13 @@ module.exports = function (auth) {
       this.sheets = google.sheets({ version: 'v4', auth });
 
     }
-    async appendTodaysDate(spreadsheetId) {
-      let today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const range = 'Github Data!A2';
+
+    async appendByColumn(spreadsheetId, value, columnLetter) {
+      const range = 'Github Data!' + columnLetter + 2;
+      console.log(`Append range: ${range}`)
       const valueInputOption = 'USER_ENTERED';
       const values = [];
-      today = today.toISOString().split('T')[0];
-      console.log(`Split Date: ${today}`);
-      values.push([today]);
+      values.push([value]);
 
       const response = await this.sheets.spreadsheets.values.append({
         spreadsheetId,
@@ -31,9 +29,17 @@ module.exports = function (auth) {
       const updatedRange = response.data.updates.updatedRange;
       console.log(updatedRange)
       let [from, to] = updatedRange.split(':');
-      let lastCell = Number(from.split('!A')[1]);
-      console.log(`Appending date in cell: ${lastCell}`);
+      let lastCell = Number(from.split('!' + columnLetter)[1]);
+      console.log(`Appending value: ${value} in cell: ${columnLetter}${lastCell}`);
       return Number(lastCell);
+    }   
+    
+    async appendTodaysDate(spreadsheetId) {
+      let today = new Date();
+      today.setHours(0, 0, 0, 0);
+      today = today.toISOString().split('T')[0];
+      console.log(`Split Date: ${today}`);
+      return await this.appendByColumn(spreadsheetId, today, 'A');
     }
 
     /**
