@@ -104,6 +104,39 @@ module.exports = (filename) => {
         console.error(err);
       }
     }
+
+    async numberOfMergedPrsYesterday(owner, repo) {
+      let today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let date = new Date();
+      today.setHours(0, 0, 0, 0);
+      let yesterday = new Date(date.setDate(date.getDate() - 1));
+      console.log(`Fetching number of merged PRs for repo: ${repo}`);
+      try {
+        const options = await this.octokit.pulls.list.endpoint.merge({
+          owner,
+          repo,
+          state: 'closed',
+          since: yesterday.toISOString(),
+        });
+        let prs = await this.octokit.paginate(options);
+        console.log(`Found ${prs.length} PRs`);
+
+        prs = prs.filter(pr => {
+          const mergedAt = new Date(pr.merged_at);
+          if ((mergedAt.getTime() > yesterday.getTime())
+            && (mergedAt.getTime() < today.getTime())) {
+            return true;
+          }
+          return false
+        })
+        return prs.length;
+      } catch (err) {
+        console.error('Could not get closed Github PRs');
+        console.error(err);
+      }
+    }
   }
+
   return GitHubHelpers;
 }

@@ -42,6 +42,11 @@ exports.main = async (title) => {
       'GoogleCloudPlatform', 'nodejs-getting-started');
     console.log(`Number of closed issues yesterday: ${closedIssues}`);
 
+    let mergedPrs = await gitHubHelpers.numberOfMergedPrsYesterday(
+      'GoogleCloudPlatform', 'nodejs-getting-started');
+      console.log(`Number of closed issues yesterday: ${mergedPrs}`);
+
+
     sheetHelpers.appendTodaysDate(id);
 
     const cloneData = await gitHubHelpers.numberOfClones(
