@@ -37,7 +37,22 @@ exports.main = async (title) => {
       'GoogleCloudPlatform', 'nodejs-getting-started');
     console.log(`Number of closed issues yesterday: ${closedIssues}`);
 
+<<<<<<< HEAD
     const lastRowIndex = await sheetHelpers.appendTodaysDate(id);
+=======
+    let mergedPrs = await gitHubHelpers.numberOfMergedPrsYesterday(
+      'GoogleCloudPlatform', 'nodejs-getting-started');
+      console.log(`Number of closed issues yesterday: ${mergedPrs}`);
+
+
+    sheetHelpers.appendTodaysDate(id);
+
+    const cloneData = await gitHubHelpers.numberOfClones(
+      'GoogleCloudPlatform', 'nodejs-getting-started');
+
+    const lastRowIndex = await sheetHelpers.appendCloneData(id, cloneData.clones)
+      .catch(err => console.error(err));
+>>>>>>> 6e7bdba55ceeecd82d679106853556bd40c259e3
 
     await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
     await sheetHelpers.createChart(id, lastRowIndex);
