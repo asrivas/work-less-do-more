@@ -28,27 +28,22 @@ exports.main = async (title) => {
 
   try {
     await gitHubHelpers.init();
-    let [numberOfOpenIssues, numberOfPRs] = await gitHubHelpers.numberOfIssuesAndPrs(
-      'GoogleCloudPlatform', 'nodejs-getting-started');
-    console.log(`Number of open issues: ${numberOfOpenIssues}`);
-    console.log(`Number of open PRs: ${numberOfPRs}`);
-    await sheetHelpers.appendByColumn(id, numberOfOpenIssues, 'B');
 
+    let [openIssues, openPullRequests] = await gitHubHelpers.numberOfIssuesAndPrs(
+      'GoogleCloudPlatform', 'nodejs-getting-started');
     let closedIssues = await gitHubHelpers.numberOfClosedIssuesYesterday(
       'GoogleCloudPlatform', 'nodejs-getting-started');
-    console.log(`Number of closed issues yesterday: ${closedIssues}`);
-    await sheetHelpers.appendByColumn(id, closedIssues, 'C');
-    await sheetHelpers.appendByColumn(id, numberOfPRs, 'D');
-
-
-    const lastRowIndex = await sheetHelpers.appendTodaysDate(id);    
-
-    let mergedPrs = await gitHubHelpers.numberOfMergedPrsYesterday(
+    let mergedPullRequests = await gitHubHelpers.numberOfMergedPrsYesterday(
       'GoogleCloudPlatform', 'nodejs-getting-started');
-      console.log(`Number of mergedPRs yesterday: ${mergedPrs}`);
-      await sheetHelpers.appendByColumn(id, mergedPrs, 'E');
 
+    // await sheetHelpers.appendByColumn(id, openIssues, 'B');
+    // await sheetHelpers.appendByColumn(id, closedIssues, 'C');
+    // await sheetHelpers.appendByColumn(id, openPullRequests, 'D');
+    // await sheetHelpers.appendByColumn(id, mergedPullRequests, 'E');
+    const lastRowIndex = await sheetHelpers.appendRowData(id, 
+      [['4/28/2019', openIssues, closedIssues, openPullRequests, mergedPullRequests]]);
     await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
+
     await sheetHelpers.createChart(id, lastRowIndex);
 
     if (newSheet) {

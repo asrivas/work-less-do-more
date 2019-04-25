@@ -10,7 +10,31 @@ module.exports = function (auth) {
 
     }
 
-    async appendByColumn(spreadsheetId, value, columnLetter) {
+    async appendRowData(spreadsheetId, row) {
+      const range = 'Github Data!A2';
+      console.log(`Append range: ${range}`)
+      const valueInputOption = 'USER_ENTERED';
+
+      const response = await this.sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range,
+        valueInputOption,
+        resource: {
+          values: row
+        }
+      });
+      // TODO: check if it has already been run today.
+      const updatedRange = response.data.updates.updatedRange;
+      console.log(updatedRange)
+      let [from, to] = updatedRange.split(':');
+      console.log(`Range response from: ${from}`)
+      console.log(from.split('!' + columnLetter)[1])
+      let lastCell = Number(from.split('!' + columnLetter)[1]);
+      console.log(`Appending value: ${value} in cell: ${columnLetter}${lastCell}`);
+      return Number(lastCell);
+    } 
+
+    async appendByColumn(spreadsheetId, [value], columnLetter) {
       const range = 'Github Data!' + columnLetter + 2;
       console.log(`Append range: ${range}`)
       const valueInputOption = 'USER_ENTERED';
@@ -29,6 +53,8 @@ module.exports = function (auth) {
       const updatedRange = response.data.updates.updatedRange;
       console.log(updatedRange)
       let [from, to] = updatedRange.split(':');
+      console.log(`Range response from: ${from}`)
+      console.log(from.split('!' + columnLetter)[1])
       let lastCell = Number(from.split('!' + columnLetter)[1]);
       console.log(`Appending value: ${value} in cell: ${columnLetter}${lastCell}`);
       return Number(lastCell);
@@ -224,8 +250,6 @@ module.exports = function (auth) {
         repeatCell: {
           range: {
             sheetId: formResponsesSheetId,
-            startRowIndex: 0,
-            endRowIndex: githubLastRowIndex,
             startColumnIndex: 0,
             endColumnIndex: 1
           },
@@ -241,8 +265,6 @@ module.exports = function (auth) {
         repeatCell: {
           range: {
             sheetId: githubSheetId,
-            startRowIndex: 0,
-            endRowIndex: githubLastRowIndex,
             startColumnIndex: 0,
             endColumnIndex: 1
           },
