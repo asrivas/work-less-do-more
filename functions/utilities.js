@@ -25,6 +25,7 @@ module.exports = function (auth) {
           values
         }
       });
+      // TODO: check if it has already been run today.
       const updatedRange = response.data.updates.updatedRange;
       console.log(updatedRange)
       let [from, to] = updatedRange.split(':');
@@ -62,12 +63,12 @@ module.exports = function (auth) {
     }
 
     async createChart(spreadsheetId, endRowIndex) {
-      const sheetId = await this.getSheetId(spreadsheetId, 1);
+      const sheetId = await this.getSheetId(spreadsheetId, 3);
       const requests = [{
         addChart: {
           "chart": {
             "spec": {
-              "title": "Best data ever",
+              "title": "Productivity Trends",
               "basicChart": {
                 "chartType": "LINE",
                 "legendPosition": "BOTTOM_LEGEND",
@@ -83,6 +84,7 @@ module.exports = function (auth) {
                 ],
                 "series": [
                   {
+                    // Date Column
                     "series": {
                       "sourceRange": {
                         "sources": [
@@ -99,6 +101,24 @@ module.exports = function (auth) {
                     "targetAxis": "LEFT_AXIS"
                   },
                   {
+                    // Opened Issues
+                    "series": {
+                      "sourceRange": {
+                        "sources": [
+                          {
+                            "sheetId": sheetId,
+                            "startRowIndex": 0,
+                            "endRowIndex": endRowIndex,
+                            "startColumnIndex": 1,
+                            "endColumnIndex": 2
+                          }
+                        ]
+                      }
+                    },
+                    "targetAxis": "LEFT_AXIS"
+                  },
+                  {
+                    // Closed Issues
                     "series": {
                       "sourceRange": {
                         "sources": [
@@ -108,6 +128,57 @@ module.exports = function (auth) {
                             "endRowIndex": endRowIndex,
                             "startColumnIndex": 2,
                             "endColumnIndex": 3
+                          }
+                        ]
+                      }
+                    },
+                    "targetAxis": "LEFT_AXIS"
+                  },
+                  {
+                    // Open PRs
+                    "series": {
+                      "sourceRange": {
+                        "sources": [
+                          {
+                            "sheetId": sheetId,
+                            "startRowIndex": 0,
+                            "endRowIndex": endRowIndex,
+                            "startColumnIndex": 3,
+                            "endColumnIndex": 4
+                          }
+                        ]
+                      }
+                    },
+                    "targetAxis": "LEFT_AXIS"
+                  },
+                  {
+                    // Closed PRs
+                    "series": {
+                      "sourceRange": {
+                        "sources": [
+                          {
+                            "sheetId": sheetId,
+                            "startRowIndex": 0,
+                            "endRowIndex": endRowIndex,
+                            "startColumnIndex": 4,
+                            "endColumnIndex": 5
+                          }
+                        ]
+                      }
+                    },
+                    "targetAxis": "LEFT_AXIS"
+                  },
+                  {
+                    // Food Happiness
+                    "series": {
+                      "sourceRange": {
+                        "sources": [
+                          {
+                            "sheetId": sheetId,
+                            "startRowIndex": 0,
+                            "endRowIndex": endRowIndex,
+                            "startColumnIndex": 5,
+                            "endColumnIndex": 6
                           }
                         ]
                       }

@@ -33,22 +33,11 @@ exports.main = async (title) => {
     console.log(`Number of open issues: ${numberOfIssues}`);
     console.log(`Number of open PRs: ${numberOfPRs}`);
 
-    [numberOfIssues, numberOfPRs] = await gitHubHelpers.numberOfClosedIssues(
-      'GoogleCloudPlatform', 'nodejs-getting-started');
-    console.log(`Number of closed issues: ${numberOfIssues}`);
-    console.log(`Number of closed PRs: ${numberOfPRs}`);
-
     let closedIssues = await gitHubHelpers.numberOfClosedIssuesYesterday(
       'GoogleCloudPlatform', 'nodejs-getting-started');
     console.log(`Number of closed issues yesterday: ${closedIssues}`);
 
-    sheetHelpers.appendTodaysDate(id);
-
-    const cloneData = await gitHubHelpers.numberOfClones(
-      'GoogleCloudPlatform', 'nodejs-getting-started');
-
-    const lastRowIndex = await sheetHelpers.appendCloneData(id, cloneData.clones)
-      .catch(err => console.error(err));
+    const lastRowIndex = await sheetHelpers.appendTodaysDate(id);
 
     await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
     await sheetHelpers.createChart(id, lastRowIndex);
