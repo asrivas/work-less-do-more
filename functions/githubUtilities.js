@@ -27,7 +27,6 @@ module.exports = (filename) => {
         let { data } = await this.octokit.repos.getClones({
           owner: owner, repo: repo,
         });
-        console.log(`Clones: ${data}`);
         return data;
       } catch (err) {
         console.error('Could not get Github clones');
