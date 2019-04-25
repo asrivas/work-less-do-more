@@ -29,8 +29,14 @@ exports.main = async (title) => {
   try {
     await gitHubHelpers.init();
 
-    sheetHelpers.getAvgFormScore(id, "foo");
-    return;
+    let today = new Date()
+    today.setHours(0, 0, 0, 0);
+    today = today.toISOString().split('T')[0];
+
+    let date = new Date(today);
+    date = date.toLocaleDateString("en-US");
+
+    const formScore = await sheetHelpers.getAvgFormScore(id, date);
 
     let [openIssues, openPullRequests] = await gitHubHelpers.numberOfIssuesAndPrs(
       'GoogleCloudPlatform', 'nodejs-getting-started');
@@ -39,12 +45,8 @@ exports.main = async (title) => {
     let mergedPullRequests = await gitHubHelpers.numberOfMergedPrsYesterday(
       'GoogleCloudPlatform', 'nodejs-getting-started');
 
-    let today = new Date()
-    today.setHours(0, 0, 0, 0);
-    today = today.toISOString().split('T')[0];
-
     const lastRowIndex = await sheetHelpers.appendRowData(id,
-      [[today, openIssues, closedIssues, openPullRequests, mergedPullRequests]]);
+      [[today, openIssues, closedIssues, openPullRequests, mergedPullRequests, formScore]]);
     await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
 
     await sheetHelpers.createChart(id, lastRowIndex);

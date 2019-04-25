@@ -256,24 +256,28 @@ module.exports = function (auth) {
 
 
     async readFormData(spreadsheetId) {
-      const range = 'Form Responses 1';
-      const values = [["foo", 1], ["bar", 8], ["foo", 5]];
+      const range = 'Form Responses 1!A2:B';
+      const response = await this.sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range,
+      });
       let m = new Map();
-      for (const value of values) {
+      for (const value of response.data.values) {
         let [date, score] = value;
         if (!m.has(date)) {
           m.set(date, []);
         }
         let scores = m.get(date);
-        m.set(date, [...scores, score]);
+        m.set(date, [...scores, Number(score)]);
       }
       console.log(m);
       return m;
     }
 
     async getAvgFormScore(spreadsheetId, date) {
+      console.log(date);
       const m = await this.readFormData(spreadsheetId);
-      const scores = m.get(date);
+      const scores = m.get(date) || [];
       let avg = scores.reduce((acc, score) => score + acc, 0)/scores.length;
       console.log(avg)
       return avg;
