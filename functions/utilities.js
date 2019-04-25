@@ -28,44 +28,8 @@ module.exports = function (auth) {
       console.log(updatedRange)
       let [from, to] = updatedRange.split(':');
       console.log(`Range response from: ${from}`)
-      console.log(from.split('!' + columnLetter)[1])
-      let lastCell = Number(from.split('!' + columnLetter)[1]);
-      console.log(`Appending value: ${value} in cell: ${columnLetter}${lastCell}`);
+      let lastCell = Number(from.split('!A')[1]);
       return Number(lastCell);
-    } 
-
-    async appendByColumn(spreadsheetId, [value], columnLetter) {
-      const range = 'Github Data!' + columnLetter + 2;
-      console.log(`Append range: ${range}`)
-      const valueInputOption = 'USER_ENTERED';
-      const values = [];
-      values.push([value]);
-
-      const response = await this.sheets.spreadsheets.values.append({
-        spreadsheetId,
-        range,
-        valueInputOption,
-        resource: {
-          values
-        }
-      });
-      // TODO: check if it has already been run today.
-      const updatedRange = response.data.updates.updatedRange;
-      console.log(updatedRange)
-      let [from, to] = updatedRange.split(':');
-      console.log(`Range response from: ${from}`)
-      console.log(from.split('!' + columnLetter)[1])
-      let lastCell = Number(from.split('!' + columnLetter)[1]);
-      console.log(`Appending value: ${value} in cell: ${columnLetter}${lastCell}`);
-      return Number(lastCell);
-    }   
-    
-    async appendTodaysDate(spreadsheetId) {
-      let today = new Date();
-      today.setHours(0, 0, 0, 0);
-      today = today.toISOString().split('T')[0];
-      console.log(`Split Date: ${today}`);
-      return await this.appendByColumn(spreadsheetId, today, 'A');
     }
 
     /**
@@ -289,7 +253,33 @@ module.exports = function (auth) {
       });
       console.log(`Update cell format response: ${response.statusText}`);
     }
+
+
+    async readFormData(spreadsheetId) {
+      const range = 'Form Responses 1';
+      const values = [["foo", 1], ["bar", 8], ["foo", 5]];
+      let m = new Map();
+      for (const value of values) {
+        let [date, score] = value;
+        if (!m.has(date)) {
+          m.set(date, []);
+        }
+        let scores = m.get(date);
+        m.set(date, [...scores, score]);
+      }
+      console.log(m);
+      return m;
+    }
+
+    async getAvgFormScore(spreadsheetId, date) {
+      const m = await this.readFormData(spreadsheetId);
+      const scores = m.get(date);
+      let avg = scores.reduce((acc, score) => score + acc, 0)/scores.length;
+      console.log(avg)
+      return avg;
+    }
   }
+
   return SheetsHelpers;
 }
 
