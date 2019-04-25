@@ -33,28 +33,6 @@ module.exports = function (auth) {
       return Number(lastCell);
     }
 
-    async appendCloneData(spreadsheetId, cloneData) {
-      const range = 'Sheet1!A2';
-      const valueInputOption = 'USER_ENTERED';
-      const values = [];
-      for (const entry of cloneData) {
-        let date = entry.timestamp.split('T')[0];
-        values.push([date, , entry.uniques]);
-      }
-
-      const response = await this.sheets.spreadsheets.values.append({
-        spreadsheetId,
-        range,
-        valueInputOption,
-        resource: {
-          values
-        }
-      });
-      const updatedRange = response.data.updates.updatedRange;
-      console.log(`Appending data: ${response.status}`);
-      return Number(updatedRange.split(':')[1].split('C')[1]);
-    }
-
     /**
      * Creates a spreadsheet with the given title.
      */
@@ -141,6 +119,7 @@ module.exports = function (auth) {
               }
             },
             "position": {
+              // Change to update later.
               "newSheet": true
             }
           }
