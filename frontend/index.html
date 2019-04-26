@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Github Productivity</title>
+    <title>Gmail API Quickstart</title>
     <meta charset="utf-8" />
   </head>
   <body>
-    <p>Run Analysis</p>
+    <p>Gmail API Quickstart</p>
 
     <!--Add buttons to initiate auth sequence and sign out-->
     <button id="authorize_button" style="display: none;">Authorize</button>
@@ -15,8 +15,8 @@
 
     <script type="text/javascript">
       // Client ID and API key from the Developer Console
-      var CLIENT_ID = 'CLIENT_ID';
-      var API_KEY = 'API_KEY';
+      var CLIENT_ID = '607684606201-p5p8qvdn5koo2tkgunm567hjfuik91og.apps.googleusercontent.com';
+      var API_KEY = 'AIzaSyDJoKzQwhVvizCx3J7TZaCSUtTeLrF18gk';
 
       // Array of API discovery doc URLs for APIs used by the quickstart
       var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
@@ -66,7 +66,7 @@
         if (isSignedIn) {
           authorizeButton.style.display = 'none';
           signoutButton.style.display = 'block';
-          listLabels();
+          sendEmail();
         } else {
           authorizeButton.style.display = 'block';
           signoutButton.style.display = 'none';
@@ -100,10 +100,25 @@
       }
 
       /**
-       * Triggers the analysis and emails the result.
+       * Print all Labels in the authorized user's inbox. If no labels
+       * are found an appropriate message is printed.
        */
-      function runAnalysis() {
-          // FILL ME
+      function sendEmail() {
+        gapi.client.gmail.users.labels.list({
+          'userId': 'me'
+        }).then(function(response) {
+          var labels = response.result.labels;
+          appendPre('Labels:');
+
+          if (labels && labels.length > 0) {
+            for (i = 0; i < labels.length; i++) {
+              var label = labels[i];
+              appendPre(label.name)
+            }
+          } else {
+            appendPre('No Labels found.');
+          }
+        });
       }
 
     </script>
