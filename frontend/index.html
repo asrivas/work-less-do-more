@@ -2,24 +2,28 @@
 <html>
 
 <head>
-  <title>Gmail API</title>
+  <title>Github vs Food Report</title>
   <meta charset="utf-8" />
 </head>
 
 <body>
-  <p>Gmail API Let's send some emails and list labels!</p>
+  <p>Daily Github Productivity vs Food Report</p>
 
   <!--Add buttons to initiate auth sequence and sign out-->
+  <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQlhbi1DNRwNYnbcSSAJUc8twY_akRPNRu64Z39EM8Ah8CDdaxblk3R4B_5MCKsA855mDyoGf9Yjrf5/pubchart?oid=772465934&amp;format=image"
+  width="650" height="400">
+  </iframe>
+  
   <button id="authorize_button" style="display: none;">Authorize</button>
-  <button id="analysis_button" style="display: none;">Run Analysis</button>
+  <button id="analysis_button" style="display: none;">Share Analysis</button>
   <button id="signout_button" style="display: none;">Sign Out</button>
 
   <pre id="content" style="white-space: pre-wrap;"></pre>
   <script ype="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"></script>
   <script type="text/javascript">
     // Client ID and API key from the Developer Console
-    var CLIENT_ID = '607684606201-p5p8qvdn5koo2tkgunm567hjfuik91og.apps.googleusercontent.com';
-    var API_KEY = 'AIzaSyDJoKzQwhVvizCx3J7TZaCSUtTeLrF18gk';
+    var CLIENT_ID = '627382050433-60dfsqdb1ral200t96ck62gqntpoa2ie.apps.googleusercontent.com';
+    var API_KEY = 'AIzaSyDyv73-Hh3bBC4C3hf4CipjErRls64PBl4';
 
     // Array of API discovery doc URLs for APIs used by the quickstart
     var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
