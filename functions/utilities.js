@@ -14,22 +14,29 @@ module.exports = function (auth) {
       const range = 'Github Data!A2';
       console.log(`Append range: ${range}`)
       const valueInputOption = 'USER_ENTERED';
-      let today = row[0];
+      let today = new Date(row[0][0]);
+      today.setHours(0, 0, 0, 0);
 
       // Check if analysis has been run today already.
-      const previousDates = await this.spreadsheets.values.get({
+      const dateColumnResponse = await this.sheets.spreadsheets.values.get({
         spreadsheetId,
         range: 'Github Data!A1:A'
       });
 
-      const rowLength = previousDates.length;
+      const rowLength = dateColumnResponse.data.values.length;
+      const lastUpdate = new Date(dateColumnResponse.data.values[rowLength - 1]);
 
-      if(previousDates[0] == today) {
+      console.log(`lastUpdate: ${lastUpdate}, today: ${today}`);
+
+      if(lastUpdate.getTime() === today.getTime()) {
         // Already run today, clear out for fresh data
-        await this.spreadsheets.values.clear({
+        console.log('Data already run for this date');
+        await this.sheets.spreadsheets.values.clear({
           spreadsheetId,
           range: 'Github Data!A' + rowLength + ':F' + rowLength
         });
+      } else {
+        console.log('fetching new data for today');
       }
 
       const response = await this.sheets.spreadsheets.values.append({

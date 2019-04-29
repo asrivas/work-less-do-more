@@ -30,11 +30,14 @@ exports.main = async (title) => {
     await gitHubHelpers.init();
 
     let today = new Date()
-    today.setHours(0, 0, 0, 0);
+    console.log(`before toISO: ${today}`)
     today = today.toISOString().split('T')[0];
+    console.log(`after toISO: ${today}`)
 
     let date = new Date(today);
-    date = date.toLocaleDateString("en-US");
+    console.log(`before toLocale: ${date}`)
+    date = date.toLocaleDateString("en-US", {timeZone: 'UTC'});
+    console.log(`after toLocale: ${date}`)
 
     const formScore = await sheetHelpers.getAvgFormScore(id, date);
 
@@ -46,7 +49,7 @@ exports.main = async (title) => {
       'GoogleCloudPlatform', 'nodejs-getting-started');
 
     const lastRowIndex = await sheetHelpers.appendOrUpdateRowData(id,
-      [[today, openIssues, closedIssues, openPullRequests, mergedPullRequests, formScore]]);
+      [[date, openIssues, closedIssues, openPullRequests, mergedPullRequests, formScore]]);
     await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
 
     await sheetHelpers.createChart(id, lastRowIndex);
