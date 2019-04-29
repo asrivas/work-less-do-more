@@ -102,10 +102,17 @@
       fetch('http://us-central1-serverless-demos-234923.cloudfunctions.net/githubChart').then(response => {
         console.log('fetching all the things');
         console.log(response);
-        if(response.status !== 200) {
+        if(!response.ok) {
           console.log(`Wrong status code ${response.status}`);
+          alert("Sorry, something went wrong")
         }
+        response.text().then( data => {
+          console.log('this is the content')
+          console.log(data);
+          alert(`response OK, get your sheet at https://docs.google.com/spreadsheets/d/${data}`);
+        })
       }).catch(err => {
+        alert(err);
         console.log(err);
         console.log('so sad, no fetch today')
       })
