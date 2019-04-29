@@ -45,7 +45,7 @@ exports.main = async (title) => {
     let mergedPullRequests = await gitHubHelpers.numberOfMergedPrsYesterday(
       'GoogleCloudPlatform', 'nodejs-getting-started');
 
-    const lastRowIndex = await sheetHelpers.appendRowData(id,
+    const lastRowIndex = await sheetHelpers.appendOrUpdateRowData(id,
       [[today, openIssues, closedIssues, openPullRequests, mergedPullRequests, formScore]]);
     await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
 

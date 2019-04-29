@@ -10,10 +10,27 @@ module.exports = function (auth) {
 
     }
 
-    async appendRowData(spreadsheetId, row) {
+    async appendOrUpdateRowData(spreadsheetId, row) {
       const range = 'Github Data!A2';
       console.log(`Append range: ${range}`)
       const valueInputOption = 'USER_ENTERED';
+      let today = row[0];
+
+      // Check if analysis has been run today already.
+      const previousDates = await this.spreadsheets.values.get({
+        spreadsheetId,
+        range: 'Github Data!A1:A'
+      });
+
+      const rowLength = previousDates.length;
+
+      if(previousDates[0] == today) {
+        // Already run today, clear out for fresh data
+        await this.spreadsheets.values.clear({
+          spreadsheetId,
+          range: 'Github Data!A' + rowLength + ':F' + rowLength
+        });
+      }
 
       const response = await this.sheets.spreadsheets.values.append({
         spreadsheetId,
@@ -23,7 +40,6 @@ module.exports = function (auth) {
           values: row
         }
       });
-      // TODO: check if it has already been run today.
       const updatedRange = response.data.updates.updatedRange;
       console.log(updatedRange)
       let [from, to] = updatedRange.split(':');
@@ -283,7 +299,6 @@ module.exports = function (auth) {
       return avg;
     }
   }
-
   return SheetsHelpers;
 }
 
