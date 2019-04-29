@@ -18,8 +18,8 @@
   <script ype="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"></script>
   <script type="text/javascript">
     // Client ID and API key from the Developer Console
-    var CLIENT_ID = '627382050433-60dfsqdb1ral200t96ck62gqntpoa2ie.apps.googleusercontent.com';
-    var API_KEY = 'AIzaSyDyv73-Hh3bBC4C3hf4CipjErRls64PBl4';
+    var CLIENT_ID = '607684606201-p5p8qvdn5koo2tkgunm567hjfuik91og.apps.googleusercontent.com';
+    var API_KEY = 'AIzaSyDJoKzQwhVvizCx3J7TZaCSUtTeLrF18gk';
 
     // Array of API discovery doc URLs for APIs used by the quickstart
     var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
@@ -56,7 +56,7 @@
         // Handle the initial sign-in state.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         authorizeButton.onclick = handleAuthClick;
-        analysisButton = handleAnalysisClick;
+        analysisButton.onclick = handleAnalysisClick;
         signoutButton.onclick = handleSignoutClick;
       }, function (error) {
         appendPre(JSON.stringify(error, null, 2));
@@ -97,8 +97,19 @@
     /**
      *  Triggers the analysis HTTP Request.
      */
-     function handleAnalysisClick(event) {
-      
+    function handleAnalysisClick(event) {
+      console.log("handle the analysis")
+      fetch('http://us-central1-serverless-demos-234923.cloudfunctions.net/githubChart').then(response => {
+        console.log('fetching all the things');
+        console.log(response);
+        if(response.status !== 200) {
+          console.log(`Wrong status code ${response.status}`);
+        }
+      }).catch(err => {
+        console.log(err);
+        console.log('so sad, no fetch today')
+      })
+
     }
 
     /**
