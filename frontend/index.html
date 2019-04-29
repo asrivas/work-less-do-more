@@ -11,14 +11,15 @@
 
   <!--Add buttons to initiate auth sequence and sign out-->
   <button id="authorize_button" style="display: none;">Authorize</button>
+  <button id="analysis_button" style="display: none;">Run Analysis</button>
   <button id="signout_button" style="display: none;">Sign Out</button>
 
   <pre id="content" style="white-space: pre-wrap;"></pre>
   <script ype="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"></script>
   <script type="text/javascript">
     // Client ID and API key from the Developer Console
-    var CLIENT_ID = '607684606201-p5p8qvdn5koo2tkgunm567hjfuik91og.apps.googleusercontent.com';
-    var API_KEY = 'AIzaSyDJoKzQwhVvizCx3J7TZaCSUtTeLrF18gk';
+    var CLIENT_ID = '627382050433-60dfsqdb1ral200t96ck62gqntpoa2ie.apps.googleusercontent.com';
+    var API_KEY = 'AIzaSyDyv73-Hh3bBC4C3hf4CipjErRls64PBl4';
 
     // Array of API discovery doc URLs for APIs used by the quickstart
     var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
@@ -28,6 +29,7 @@
     var SCOPES = 'https://www.googleapis.com/auth/gmail.send';
 
     var authorizeButton = document.getElementById('authorize_button');
+    var analysisButton = document.getElementById('analysis_button');
     var signoutButton = document.getElementById('signout_button');
 
     /**
@@ -54,6 +56,7 @@
         // Handle the initial sign-in state.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         authorizeButton.onclick = handleAuthClick;
+        analysisButton = handleAnalysisClick;
         signoutButton.onclick = handleSignoutClick;
       }, function (error) {
         appendPre(JSON.stringify(error, null, 2));
@@ -67,10 +70,12 @@
     function updateSigninStatus(isSignedIn) {
       if (isSignedIn) {
         authorizeButton.style.display = 'none';
+        analysisButton.style.display = 'block';
         signoutButton.style.display = 'block';
-        sendEmail();
+        //sendEmail();
       } else {
         authorizeButton.style.display = 'block';
+        analysisButton.style.display = 'none';
         signoutButton.style.display = 'none';
       }
     }
@@ -87,6 +92,13 @@
      */
     function handleSignoutClick(event) {
       gapi.auth2.getAuthInstance().signOut();
+    }
+
+    /**
+     *  Triggers the analysis HTTP Request.
+     */
+     function handleAnalysisClick(event) {
+      
     }
 
     /**
