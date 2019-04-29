@@ -52,7 +52,13 @@ exports.main = async (title) => {
       [[date, openIssues, closedIssues, openPullRequests, mergedPullRequests, formScore]]);
     await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
 
-    await sheetHelpers.createChart(id, lastRowIndex);
+    const chartId = await sheetHelpers.getChartId(id);
+    console.log(`chartId: ${chartId}`);
+    if (!chartId) {
+      await sheetHelpers.createChart(id, lastRowIndex);
+    } else {
+      await sheetHelpers.updateChart(id, lastRowIndex, chartId);
+    }
 
     if (newSheet) {
       //  TODO(asrivast): Use IAM, read email from request.  

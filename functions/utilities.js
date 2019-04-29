@@ -28,7 +28,7 @@ module.exports = function (auth) {
 
       console.log(`lastUpdate: ${lastUpdate}, today: ${today}`);
 
-      if(lastUpdate.getTime() === today.getTime()) {
+      if (lastUpdate.getTime() === today.getTime()) {
         // Already run today, clear out for fresh data
         console.log(`Updating today's data: ${today}`);
         await this.sheets.spreadsheets.values.clear({
@@ -101,26 +101,29 @@ module.exports = function (auth) {
                   {
                     "position": "LEFT_AXIS",
                     "title": "Number of Clones"
+                  },
+                  {
+                    "position": "RIGHT_AXIS",
+                    "title": "Food Happiness"
                   }
                 ],
-                "series": [
-                  {
-                    // Date Column
-                    "series": {
-                      "sourceRange": {
-                        "sources": [
-                          {
-                            "sheetId": sheetId,
-                            "startRowIndex": 0,
-                            "endRowIndex": endRowIndex,
-                            "startColumnIndex": 0,
-                            "endColumnIndex": 1
-                          }
-                        ]
-                      }
-                    },
-                    "targetAxis": "LEFT_AXIS"
+                "domains": [{
+                  // Date labels
+                  "domain": {
+                    "sourceRange": {
+                      "sources": [
+                        {
+                          "sheetId": sheetId,
+                          "startRowIndex": 0,
+                          "endRowIndex": endRowIndex,
+                          "startColumnIndex": 0,
+                          "endColumnIndex": 1
+                        }
+                      ]
+                    }
                   },
+                }],
+                "series": [
                   {
                     // Opened Issues
                     "series": {
@@ -204,7 +207,7 @@ module.exports = function (auth) {
                         ]
                       }
                     },
-                    "targetAxis": "LEFT_AXIS"
+                    "targetAxis": "RIGHT_AXIS"
                   },
                 ],
                 "headerCount": 1
@@ -227,6 +230,153 @@ module.exports = function (auth) {
         resource,
       })
       console.log('Chart created with Id: ' + response.data.replies[0].addChart.chart.chartId);
+    }
+
+    async updateChart(spreadsheetId, endRowIndex, chartId) {
+      const sheetId = await this.getSheetId(spreadsheetId, 3);
+      console.log(`Updating chart: ${chartId}`);
+      const requests = [{
+        updateChartSpec: {
+          chartId,
+          "spec": {
+            "title": "Productivity Trends",
+            "basicChart": {
+              "chartType": "LINE",
+              "legendPosition": "BOTTOM_LEGEND",
+              "axis": [
+                {
+                  "position": "BOTTOM_AXIS",
+                  "title": "Date"
+                },
+                {
+                  "position": "LEFT_AXIS",
+                  "title": "Number of Clones"
+                },
+                {
+                  "position": "RIGHT_AXIS",
+                  "title": "Food Happiness"
+                }
+              ],
+              "domains": [{
+                // Date labels
+                "domain": {
+                  "sourceRange": {
+                    "sources": [
+                      {
+                        "sheetId": sheetId,
+                        "startRowIndex": 0,
+                        "endRowIndex": endRowIndex,
+                        "startColumnIndex": 0,
+                        "endColumnIndex": 1
+                      }
+                    ]
+                  }
+                },
+              }],
+              "series": [
+                {
+                  // Opened Issues
+                  "series": {
+                    "sourceRange": {
+                      "sources": [
+                        {
+                          "sheetId": sheetId,
+                          "startRowIndex": 0,
+                          "endRowIndex": endRowIndex,
+                          "startColumnIndex": 1,
+                          "endColumnIndex": 2
+                        }
+                      ]
+                    }
+                  },
+                  "targetAxis": "LEFT_AXIS"
+                },
+                {
+                  // Closed Issues
+                  "series": {
+                    "sourceRange": {
+                      "sources": [
+                        {
+                          "sheetId": sheetId,
+                          "startRowIndex": 0,
+                          "endRowIndex": endRowIndex,
+                          "startColumnIndex": 2,
+                          "endColumnIndex": 3
+                        }
+                      ]
+                    }
+                  },
+                  "targetAxis": "LEFT_AXIS"
+                },
+                {
+                  // Open PRs
+                  "series": {
+                    "sourceRange": {
+                      "sources": [
+                        {
+                          "sheetId": sheetId,
+                          "startRowIndex": 0,
+                          "endRowIndex": endRowIndex,
+                          "startColumnIndex": 3,
+                          "endColumnIndex": 4
+                        }
+                      ]
+                    }
+                  },
+                  "targetAxis": "LEFT_AXIS"
+                },
+                {
+                  // Closed PRs
+                  "series": {
+                    "sourceRange": {
+                      "sources": [
+                        {
+                          "sheetId": sheetId,
+                          "startRowIndex": 0,
+                          "endRowIndex": endRowIndex,
+                          "startColumnIndex": 4,
+                          "endColumnIndex": 5
+                        }
+                      ]
+                    }
+                  },
+                  "targetAxis": "LEFT_AXIS"
+                },
+                {
+                  // Food Happiness
+                  "series": {
+                    "sourceRange": {
+                      "sources": [
+                        {
+                          "sheetId": sheetId,
+                          "startRowIndex": 0,
+                          "endRowIndex": endRowIndex,
+                          "startColumnIndex": 5,
+                          "endColumnIndex": 6
+                        }
+                      ]
+                    }
+                  },
+                  "targetAxis": "RIGHT_AXIS"
+                },
+              ],
+              "headerCount": 1
+            }
+          },
+
+
+        }
+      }];
+
+      const resource = {
+        requests,
+      }
+
+      const response = await this.sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        resource,
+      })
+      console.log(response.data.replies[0]);
     }
 
     async updateCellFormatToDate(spreadsheetId, githubLastRowIndex) {
@@ -301,11 +451,27 @@ module.exports = function (auth) {
       console.log(date);
       const m = await this.readFormData(spreadsheetId);
       const scores = m.get(date) || [];
-      let avg = scores.reduce((acc, score) => score + acc, 0)/scores.length;
+      let avg = scores.reduce((acc, score) => score + acc, 0) / scores.length;
       console.log(avg)
       return avg;
     }
+
+    async getChartId(spreadsheetId) {
+      const { data } = await this.sheets.spreadsheets.get({
+        spreadsheetId
+      });
+      console.log(data);
+
+      for (const sheet of data.sheets) {
+        if (sheet.charts) {
+          return sheet.charts[0].chartId;
+        }
+      }
+    }
   }
+
   return SheetsHelpers;
 }
+
+
 
