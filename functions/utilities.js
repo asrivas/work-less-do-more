@@ -30,13 +30,13 @@ module.exports = function (auth) {
 
       if(lastUpdate.getTime() === today.getTime()) {
         // Already run today, clear out for fresh data
-        console.log('Data already run for this date');
+        console.log(`Updating today's data: ${today}`);
         await this.sheets.spreadsheets.values.clear({
           spreadsheetId,
           range: 'Github Data!A' + rowLength + ':F' + rowLength
         });
       } else {
-        console.log('fetching new data for today');
+        console.log(`Fetching new data for today: ${today}`);
       }
 
       const response = await this.sheets.spreadsheets.values.append({
