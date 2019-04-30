@@ -53,7 +53,6 @@ function updateSigninStatus(isSignedIn) {
     authorizeButton.style.display = 'none';
     analysisButton.style.display = 'block';
     signoutButton.style.display = 'block';
-    //sendEmail();
   } else {
     authorizeButton.style.display = 'block';
     analysisButton.style.display = 'none';
@@ -95,7 +94,8 @@ function handleAnalysisClick(event) {
       sheetLink.setAttribute('href', link);
       sheetLink.innerHTML = 'here';
       resultElement.innerHTML = `Response OK, get your sheet ${sheetLink}`
-    })
+      sendEmail();
+    });
   }).catch(err => {
     alert(err);
     console.log(err);
@@ -121,31 +121,15 @@ function appendPre(message) {
  * are found an appropriate message is printed.
  */
 function sendEmail() {
-  gapi.client.gmail.users.labels.list({
-    'userId': 'me'
-  }).then(function (response) {
-    var labels = response.result.labels;
-    appendPre('Labels:');
-
-    if (labels && labels.length > 0) {
-      for (i = 0; i < labels.length; i++) {
-        var label = labels[i];
-        appendPre(label.name)
-      }
-    } else {
-      appendPre('No Labels found.');
-    }
-  });
-
   let rawEmail = createEmail();
   gapi.client.gmail.users.messages.send({
     'userId': 'me',
     'resource': { 'raw': rawEmail },
   }).then(function (response) {
-    console.log("We are spamming everybody yeah.")
+    console.log("Email sent successfully.")
     console.log(response);
   }).catch(function (error) {
-    console.log('so sad, no worky');
+    console.log('Error sending email');
     console.log(error);
   });
 }
