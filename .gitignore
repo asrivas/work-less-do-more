@@ -1,4 +1,8 @@
 githubToken.json
+.vscode/
+credentials.json
+frontend/keys.js
+token.json
 
 # Logs
 logs
