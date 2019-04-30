@@ -48,7 +48,7 @@ exports.main = async (title) => {
 
     const lastRowIndex = await sheetHelpers.appendOrUpdateRowData(id,
       [[date, openIssues, closedIssues, openPullRequests, mergedPullRequests, formScore]]);
-    await sheetHelpers.updateCellFormatToDate(id, lastRowIndex);
+    await sheetHelpers.updateCellFormatToDate(id);
 
     const chartId = await sheetHelpers.getChartId(id);
     console.log(`chartId: ${chartId}`);
