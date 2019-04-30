@@ -26,7 +26,6 @@ module.exports = function (auth) {
       const rowLength = dateColumnResponse.data.values.length;
       const lastUpdate = new Date(dateColumnResponse.data.values[rowLength - 1]);
 
-      console.log(`lastUpdate: ${lastUpdate}, today: ${today}`);
 
       if (lastUpdate.getTime() === today.getTime()) {
         // Already run today, clear out for fresh data
@@ -39,7 +38,7 @@ module.exports = function (auth) {
         console.log(`Fetching new data for today: ${today}`);
       }
 
-      const response = await this.sheets.spreadsheets.values.append({
+      const { data } = await this.sheets.spreadsheets.values.append({
         spreadsheetId,
         range,
         valueInputOption,
@@ -47,7 +46,7 @@ module.exports = function (auth) {
           values: row
         }
       });
-      const updatedRange = response.data.updates.updatedRange;
+      const updatedRange = data.updates.updatedRange;
       console.log(updatedRange)
       let [from, to] = updatedRange.split(':');
       console.log(`Range response from: ${from}`)
@@ -225,11 +224,11 @@ module.exports = function (auth) {
         requests,
       }
 
-      const response = await this.sheets.spreadsheets.batchUpdate({
+      const { data } = await this.sheets.spreadsheets.batchUpdate({
         spreadsheetId,
         resource,
       })
-      console.log('Chart created with Id: ' + response.data.replies[0].addChart.chart.chartId);
+      console.log('Chart created with Id: ' + data.replies[0].addChart.chart.chartId);
     }
 
     async updateChart(spreadsheetId, endRowIndex, chartId) {
@@ -372,11 +371,11 @@ module.exports = function (auth) {
         requests,
       }
 
-      const response = await this.sheets.spreadsheets.batchUpdate({
+      const { data } = await this.sheets.spreadsheets.batchUpdate({
         spreadsheetId,
         resource,
       })
-      console.log(response.data.replies[0]);
+      console.log(data.replies[0]);
     }
 
     async updateCellFormatToDate(spreadsheetId, githubLastRowIndex) {
@@ -420,11 +419,11 @@ module.exports = function (auth) {
         requests,
       }
 
-      const response = await this.sheets.spreadsheets.batchUpdate({
+      const { statusText } = await this.sheets.spreadsheets.batchUpdate({
         spreadsheetId,
         resource,
       });
-      console.log(`Update cell format response: ${response.statusText}`);
+      console.log(`Update cell format response: ${statusText}`);
     }
 
 
