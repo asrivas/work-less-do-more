@@ -21,6 +21,7 @@ exports.main = async (title) => {
     }
   } catch (err) {
     console.error(`Error: ${err}`);
+    throw new Error(err);
   }
 
   const GitHubHelpers = require('./githubUtilities')('./githubToken.json',

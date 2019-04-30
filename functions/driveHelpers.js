@@ -32,6 +32,9 @@ module.exports = auth => {
     async idOfSheet(title) {
       try {
         let { data } = await this.drive.files.list();
+        if (!data.files) {
+          return;
+        }
         for (const file of data.files) {
           if (file.name === title) {
             console.log(`Using existing file: ${file.id}`);
@@ -41,6 +44,7 @@ module.exports = auth => {
       } catch (err) {
         console.log('Listing files failed.')
         console.log(err);
+        throw new Error(err);
       }
     }
 

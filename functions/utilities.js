@@ -466,8 +466,10 @@ module.exports = function (auth) {
       const { data } = await this.sheets.spreadsheets.get({
         spreadsheetId
       });
-      console.log(data);
 
+      if (!data.sheets) {
+        return;
+      }
       for (const sheet of data.sheets) {
         if (sheet.charts) {
           return sheet.charts[0].chartId;
