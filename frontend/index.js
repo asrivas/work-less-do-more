@@ -92,13 +92,14 @@ function handleAnalysisClick(event) {
       const sheetLink = document.createElement('a')
       sheetLink.setAttribute('href', link);
       sheetLink.innerHTML = 'here';
-      resultElement.innerHTML = `Response OK, get your sheet ${sheetLink}`
+      resultElement.innerHTML = `Response OK, get your sheet `;
+      resultElement.appendChild(sheetLink);
       sendEmail();
     });
   }).catch(err => {
     alert(err);
     console.log(err);
-    console.log('so sad, no fetch today')
+    console.log('Error while triggering Cloud Function')
   })
 
 }
