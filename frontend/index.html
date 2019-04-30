@@ -17,6 +17,7 @@
   <button id="authorize_button" style="display: none;">Authorize</button>
   <button id="analysis_button" style="display: none;">Share Analysis</button>
   <button id="signout_button" style="display: none;">Sign Out</button>
+  <p id=result></p>
 
   <pre id="content" style="white-space: pre-wrap;"></pre>
   <script ype="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"></script>
@@ -103,17 +104,21 @@
      */
     function handleAnalysisClick(event) {
       console.log("handle the analysis")
+      const resultElement = document.getElementById('result');
       fetch('http://us-central1-serverless-demos-234923.cloudfunctions.net/githubChart').then(response => {
         console.log('fetching all the things');
         console.log(response);
-        if(!response.ok) {
+        if (!response.ok) {
           console.log(`Wrong status code ${response.status}`);
-          alert("Sorry, something went wrong")
+          resultElement.innerHTML = "Sorry, something went wrong"
         }
-        response.text().then( data => {
-          console.log('this is the content')
-          console.log(data);
-          alert(`response OK, get your sheet at https://docs.google.com/spreadsheets/d/${data}`);
+        response.text().then(link => {
+          console.log('this is the content:')
+          console.log(link);
+          const sheetLink = document.createElement('a')
+          sheetLink.setAttribute('href', link);
+          sheetLink.innerHTML = 'here';
+          resultElement.innerHTML = `Response OK, get your sheet ${sheetLink}`
         })
       }).catch(err => {
         alert(err);
