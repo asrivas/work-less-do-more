@@ -23,7 +23,9 @@ exports.main = async (title) => {
     console.error(`Error: ${err}`);
   }
 
-  const GitHubHelpers = require('./githubUtilities')('./githubToken.json');
+  const GitHubHelpers = require('./githubUtilities')('./githubToken.json',
+    'GoogleCloudPlatform',
+    'nodejs-getting-started');
   const gitHubHelpers = new GitHubHelpers();
 
   try {
@@ -36,17 +38,14 @@ exports.main = async (title) => {
 
     let date = new Date(today);
     console.log(`before toLocale: ${date}`)
-    date = date.toLocaleDateString("en-US", {timeZone: 'UTC'});
+    date = date.toLocaleDateString("en-US", { timeZone: 'UTC' });
     console.log(`after toLocale: ${date}`)
 
     const formScore = await sheetHelpers.getAvgFormScore(id, date);
 
-    let [openIssues, openPullRequests] = await gitHubHelpers.numberOfIssuesAndPrs(
-      'GoogleCloudPlatform', 'nodejs-getting-started');
-    let closedIssues = await gitHubHelpers.numberOfClosedIssuesYesterday(
-      'GoogleCloudPlatform', 'nodejs-getting-started');
-    let mergedPullRequests = await gitHubHelpers.numberOfMergedPrsYesterday(
-      'GoogleCloudPlatform', 'nodejs-getting-started');
+    let [openIssues, openPullRequests] = await gitHubHelpers.numberOfIssuesAndPrs();
+    let closedIssues = await gitHubHelpers.numberOfClosedIssuesYesterday();
+    let mergedPullRequests = await gitHubHelpers.numberOfMergedPrsYesterday();
 
     const lastRowIndex = await sheetHelpers.appendOrUpdateRowData(id,
       [[date, openIssues, closedIssues, openPullRequests, mergedPullRequests, formScore]]);

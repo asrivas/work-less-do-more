@@ -3,10 +3,12 @@ const fs = require('fs').promises;
 
 const Octokit = require('@octokit/rest');
 
-module.exports = (filename) => {
+module.exports = (filename, owner, repo) => {
   class GitHubHelpers {
     constructor() {
       this.filename = filename;
+      this.owner = owner;
+      this.repo = repo;
     }
 
     async init() {
@@ -20,12 +22,13 @@ module.exports = (filename) => {
     /**
      * Returns the number of clones for repo the last 2 weeks.
      */
-    async numberOfClones(owner, repo) {
-      console.log(`Fetching number of clones for repo: ${repo}`);
+    async numberOfClones() {
+      console.log(`Fetching number of clones for repo: ${this.repo}`);
       try {
         // https://octokit.github.io/rest.js/#api-Repos-getClones
         let { data } = await this.octokit.repos.getClones({
-          owner: owner, repo: repo,
+          owner: this.owner,
+          repo: this.repo,
         });
         return data;
       } catch (err) {
@@ -35,12 +38,12 @@ module.exports = (filename) => {
     }
 
     // open issues and PRs
-    async numberOfIssuesAndPrs(owner, repo) {
-      console.log(`Fetching number of issues for repo: ${repo}`);
+    async numberOfIssuesAndPrs() {
+      console.log(`Fetching number of issues for repo: ${this.repo}`);
       try {
         const options = await this.octokit.issues.listForRepo.endpoint.merge({
-          owner,
-          repo
+          owner: this.owner,
+          repo: this.repo,
         });
         const issues = await this.octokit.paginate(options);
         console.log(`Found ${issues.length} issues`);
@@ -53,12 +56,12 @@ module.exports = (filename) => {
     }
 
     // Since the beginning of time
-    async numberOfClosedIssues(owner, repo) {
-      console.log(`Fetching number of issues for repo: ${repo}`);
+    async numberOfClosedIssues() {
+      console.log(`Fetching number of issues for repo: ${this.repo}`);
       try {
         const options = await this.octokit.issues.listForRepo.endpoint.merge({
-          owner,
-          repo,
+          owner: this.owner,
+          repo: this.repo,
           state: 'closed'
         });
         const issues = await this.octokit.paginate(options);
@@ -71,17 +74,17 @@ module.exports = (filename) => {
       }
     }
 
-    async numberOfClosedIssuesYesterday(owner, repo) {
+    async numberOfClosedIssuesYesterday() {
       let today = new Date();
       today.setHours(0, 0, 0, 0);
       let date = new Date();
       today.setHours(0, 0, 0, 0);
       let yesterday = new Date(date.setDate(date.getDate() - 1));
-      console.log(`Fetching number of closed issues for repo: ${repo}`);
+      console.log(`Fetching number of closed issues for repo: ${this.repo}`);
       try {
         const options = await this.octokit.issues.listForRepo.endpoint.merge({
-          owner,
-          repo,
+          owner: this.owner,
+          repo: this.repo,
           state: 'closed',
           since: yesterday.toISOString(),
         });
@@ -104,17 +107,17 @@ module.exports = (filename) => {
       }
     }
 
-    async numberOfMergedPrsYesterday(owner, repo) {
+    async numberOfMergedPrsYesterday() {
       let today = new Date();
       today.setHours(0, 0, 0, 0);
       let date = new Date();
       today.setHours(0, 0, 0, 0);
       let yesterday = new Date(date.setDate(date.getDate() - 1));
-      console.log(`Fetching number of merged PRs for repo: ${repo}`);
+      console.log(`Fetching number of merged PRs for repo: ${this.repo}`);
       try {
         const options = await this.octokit.pulls.list.endpoint.merge({
-          owner,
-          repo,
+          owner: this.owner,
+          repo: this.repo,
           state: 'closed',
           since: yesterday.toISOString(),
         });
