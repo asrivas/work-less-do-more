@@ -32,14 +32,10 @@ exports.main = async (title) => {
     await gitHubHelpers.init();
 
     let today = new Date()
-    console.log(`before toISO: ${today}`)
     today = today.toISOString().split('T')[0];
-    console.log(`after toISO: ${today}`)
 
     let date = new Date(today);
-    console.log(`before toLocale: ${date}`)
     date = date.toLocaleDateString("en-US", { timeZone: 'UTC' });
-    console.log(`after toLocale: ${date}`)
 
     const formScore = await sheetHelpers.getAvgFormScore(id, date);
 

@@ -430,12 +430,15 @@ module.exports = function (auth) {
 
     async readFormData(spreadsheetId) {
       const range = 'Form Responses 1!A2:B';
-      const response = await this.sheets.spreadsheets.values.get({
+      const { data } = await this.sheets.spreadsheets.values.get({
         spreadsheetId,
         range,
       });
       let m = new Map();
-      for (const value of response.data.values) {
+      if (!data.values) {
+        return m;
+      }
+      for (const value of data.values) {
         let [date, score] = value;
         if (!m.has(date)) {
           m.set(date, []);
@@ -452,6 +455,9 @@ module.exports = function (auth) {
       const m = await this.readFormData(spreadsheetId);
       const scores = m.get(date) || [];
       let avg = scores.reduce((acc, score) => score + acc, 0) / scores.length;
+      if (!scores.length) {
+        avg = 0;
+      }
       console.log(avg)
       return avg;
     }
