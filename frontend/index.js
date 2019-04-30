@@ -84,7 +84,10 @@ function handleAnalysisClick(event) {
     document.getElementById('spinner').classList.remove('is-active');
     if (!response.ok) {
       console.log(`Wrong status code ${response.status}`);
-      resultElement.innerHTML = "Sorry, something went wrong"
+      const p = document.createElement('p');
+      p.innerHTML = 'Error: ' + response;
+      resultElement.appendChild(p);
+      return;
     }
     response.text().then(link => {
       console.log('this is the content:')
@@ -92,8 +95,10 @@ function handleAnalysisClick(event) {
       const sheetLink = document.createElement('a')
       sheetLink.setAttribute('href', link);
       sheetLink.innerHTML = 'here';
-      resultElement.innerHTML = `Response OK, get your sheet `;
-      resultElement.appendChild(sheetLink);
+      const p = document.createElement('p');
+      p.innerHTML = `Response OK, get your sheet `;
+      p.appendChild(sheetLink);
+      resultElement.appendChild(p);
       sendEmail();
     });
   }).catch(err => {
