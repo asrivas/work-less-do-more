@@ -76,10 +76,12 @@ function handleSignoutClick(event) {
  */
 function handleAnalysisClick(event) {
   console.log("handle the analysis")
+  document.getElementById('spinner').classList.add('is-active');
   const resultElement = document.getElementById('result');
   fetch('http://us-central1-serverless-demos-234923.cloudfunctions.net/githubChart').then(response => {
     console.log('fetching all the things');
     console.log(response);
+    document.getElementById('spinner').classList.remove('is-active');
     if (!response.ok) {
       console.log(`Wrong status code ${response.status}`);
       resultElement.innerHTML = "Sorry, something went wrong"
