@@ -5,7 +5,7 @@ exports.main = async (title) => {
     scopes: ['https://www.googleapis.com/auth/drive.file']
   });
 
-  const SheetHelpers = require('./utilities')(auth);
+  const SheetHelpers = require('./sheetHelpers')(auth);
   const sheetHelpers = new SheetHelpers();
 
   const DriveHelpers = require('./driveHelpers')(auth);
@@ -24,7 +24,7 @@ exports.main = async (title) => {
     throw new Error(err);
   }
 
-  const GitHubHelpers = require('./githubUtilities')('./githubToken.json',
+  const GitHubHelpers = require('./githubHelpers')('./githubToken.json',
     'GoogleCloudPlatform',
     'nodejs-getting-started');
   const gitHubHelpers = new GitHubHelpers();
