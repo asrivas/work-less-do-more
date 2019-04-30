@@ -89,135 +89,135 @@ module.exports = function (auth) {
       const githubSheetId = await this.getSheetId(spreadsheetId, GITHUBSHEETINDEX);
       const requests = [{
         addChart: {
-          "chart": {
-            "spec": {
-              "title": "Productivity Trends",
-              "basicChart": {
-                "chartType": "LINE",
-                "legendPosition": "BOTTOM_LEGEND",
-                "axis": [
+          chart: {
+            spec: {
+              title: "Productivity Trends",
+              basicChart: {
+                chartType: "LINE",
+                legendPosition: "BOTTOM_LEGEND",
+                axis: [
                   {
-                    "position": "BOTTOM_AXIS",
-                    "title": "Date"
+                    position: "BOTTOM_AXIS",
+                    title: "Date"
                   },
                   {
-                    "position": "LEFT_AXIS",
-                    "title": "Number of Clones"
+                    position: "LEFT_AXIS",
+                    title: "Number of Clones"
                   },
                   {
-                    "position": "RIGHT_AXIS",
-                    "title": "Food Happiness"
+                    position: "RIGHT_AXIS",
+                    title: "Food Happiness"
                   }
                 ],
-                "domains": [{
+                domains: [{
                   // Date labels
-                  "domain": {
-                    "sourceRange": {
-                      "sources": [
+                  domain: {
+                    sourceRange: {
+                      sources: [
                         {
-                          "sheetId": githubSheetId,
-                          "startRowIndex": 0,
-                          "endRowIndex": endRowIndex,
-                          "startColumnIndex": 0,
-                          "endColumnIndex": 1
+                          sheetId: githubSheetId,
+                          startRowIndex: 0,
+                          endRowIndex: endRowIndex,
+                          startColumnIndex: 0,
+                          endColumnIndex: 1
                         }
                       ]
                     }
                   },
                 }],
-                "series": [
+                series: [
                   {
                     // Opened Issues
-                    "series": {
-                      "sourceRange": {
-                        "sources": [
+                    series: {
+                      sourceRange: {
+                        sources: [
                           {
-                            "sheetId": githubSheetId,
-                            "startRowIndex": 0,
-                            "endRowIndex": endRowIndex,
-                            "startColumnIndex": 1,
-                            "endColumnIndex": 2
+                            sheetId: githubSheetId,
+                            startRowIndex: 0,
+                            endRowIndex: endRowIndex,
+                            startColumnIndex: 1,
+                            endColumnIndex: 2
                           }
                         ]
                       }
                     },
-                    "targetAxis": "LEFT_AXIS"
+                    targetAxis: "LEFT_AXIS"
                   },
                   {
                     // Closed Issues
-                    "series": {
-                      "sourceRange": {
-                        "sources": [
+                    series: {
+                      sourceRange: {
+                        sources: [
                           {
-                            "sheetId": githubSheetId,
-                            "startRowIndex": 0,
-                            "endRowIndex": endRowIndex,
-                            "startColumnIndex": 2,
-                            "endColumnIndex": 3
+                            sheetId: githubSheetId,
+                            startRowIndex: 0,
+                            endRowIndex: endRowIndex,
+                            startColumnIndex: 2,
+                            endColumnIndex: 3
                           }
                         ]
                       }
                     },
-                    "targetAxis": "LEFT_AXIS"
+                    targetAxis: "LEFT_AXIS"
                   },
                   {
                     // Open PRs
-                    "series": {
-                      "sourceRange": {
-                        "sources": [
+                    series: {
+                      sourceRange: {
+                        sources: [
                           {
-                            "sheetId": githubSheetId,
-                            "startRowIndex": 0,
-                            "endRowIndex": endRowIndex,
-                            "startColumnIndex": 3,
-                            "endColumnIndex": 4
+                            sheetId: githubSheetId,
+                            startRowIndex: 0,
+                            endRowIndex: endRowIndex,
+                            startColumnIndex: 3,
+                            endColumnIndex: 4
                           }
                         ]
                       }
                     },
-                    "targetAxis": "LEFT_AXIS"
+                    targetAxis: "LEFT_AXIS"
                   },
                   {
                     // Closed PRs
-                    "series": {
-                      "sourceRange": {
-                        "sources": [
+                    series: {
+                      sourceRange: {
+                        sources: [
                           {
-                            "sheetId": githubSheetId,
-                            "startRowIndex": 0,
-                            "endRowIndex": endRowIndex,
-                            "startColumnIndex": 4,
-                            "endColumnIndex": 5
+                            sheetId: githubSheetId,
+                            startRowIndex: 0,
+                            endRowIndex: endRowIndex,
+                            startColumnIndex: 4,
+                            endColumnIndex: 5
                           }
                         ]
                       }
                     },
-                    "targetAxis": "LEFT_AXIS"
+                    targetAxis: "LEFT_AXIS"
                   },
                   {
                     // Food Happiness
-                    "series": {
-                      "sourceRange": {
-                        "sources": [
+                    series: {
+                      sourceRange: {
+                        sources: [
                           {
-                            "sheetId": githubSheetId,
-                            "startRowIndex": 0,
-                            "endRowIndex": endRowIndex,
-                            "startColumnIndex": 5,
-                            "endColumnIndex": 6
+                            sheetId: githubSheetId,
+                            startRowIndex: 0,
+                            endRowIndex: endRowIndex,
+                            startColumnIndex: 5,
+                            endColumnIndex: 6
                           }
                         ]
                       }
                     },
-                    "targetAxis": "RIGHT_AXIS"
+                    targetAxis: "RIGHT_AXIS"
                   },
                 ],
-                "headerCount": 1
+                headerCount: 1
               }
             },
-            "position": {
+            position: {
               // Change to update later.
-              "newSheet": true
+              newSheet: true
             }
           }
         }
@@ -240,129 +240,129 @@ module.exports = function (auth) {
       const requests = [{
         updateChartSpec: {
           chartId,
-          "spec": {
-            "title": "Productivity Trends",
-            "basicChart": {
-              "chartType": "LINE",
-              "legendPosition": "BOTTOM_LEGEND",
-              "axis": [
+          spec: {
+            title: "Productivity Trends",
+            basicChart: {
+              chartType: "LINE",
+              legendPosition: "BOTTOM_LEGEND",
+              axis: [
                 {
-                  "position": "BOTTOM_AXIS",
-                  "title": "Date"
+                  position: "BOTTOM_AXIS",
+                  title: "Date"
                 },
                 {
-                  "position": "LEFT_AXIS",
-                  "title": "Number of Clones"
+                  position: "LEFT_AXIS",
+                  title: "Number of Clones"
                 },
                 {
-                  "position": "RIGHT_AXIS",
-                  "title": "Food Happiness"
+                  position: "RIGHT_AXIS",
+                  title: "Food Happiness"
                 }
               ],
-              "domains": [{
+              domains: [{
                 // Date labels
-                "domain": {
-                  "sourceRange": {
-                    "sources": [
+                domain: {
+                  sourceRange: {
+                    sources: [
                       {
-                        "sheetId": githubSheetId,
-                        "startRowIndex": 0,
-                        "endRowIndex": endRowIndex,
-                        "startColumnIndex": 0,
-                        "endColumnIndex": 1
+                        sheetId: githubSheetId,
+                        startRowIndex: 0,
+                        endRowIndex: endRowIndex,
+                        startColumnIndex: 0,
+                        endColumnIndex: 1
                       }
                     ]
                   }
                 },
               }],
-              "series": [
+              series: [
                 {
                   // Opened Issues
-                  "series": {
-                    "sourceRange": {
-                      "sources": [
+                  series: {
+                    sourceRange: {
+                      sources: [
                         {
-                          "sheetId": githubSheetId,
-                          "startRowIndex": 0,
-                          "endRowIndex": endRowIndex,
-                          "startColumnIndex": 1,
-                          "endColumnIndex": 2
+                          sheetId: githubSheetId,
+                          startRowIndex: 0,
+                          endRowIndex: endRowIndex,
+                          startColumnIndex: 1,
+                          endColumnIndex: 2
                         }
                       ]
                     }
                   },
-                  "targetAxis": "LEFT_AXIS"
+                  targetAxis: "LEFT_AXIS"
                 },
                 {
                   // Closed Issues
-                  "series": {
-                    "sourceRange": {
-                      "sources": [
+                  series: {
+                    sourceRange: {
+                      sources: [
                         {
-                          "sheetId": githubSheetId,
-                          "startRowIndex": 0,
-                          "endRowIndex": endRowIndex,
-                          "startColumnIndex": 2,
-                          "endColumnIndex": 3
+                          sheetId: githubSheetId,
+                          startRowIndex: 0,
+                          endRowIndex: endRowIndex,
+                          startColumnIndex: 2,
+                          endColumnIndex: 3
                         }
                       ]
                     }
                   },
-                  "targetAxis": "LEFT_AXIS"
+                  targetAxis: "LEFT_AXIS"
                 },
                 {
                   // Open PRs
-                  "series": {
-                    "sourceRange": {
-                      "sources": [
+                  series: {
+                    sourceRange: {
+                      sources: [
                         {
-                          "sheetId": githubSheetId,
-                          "startRowIndex": 0,
-                          "endRowIndex": endRowIndex,
-                          "startColumnIndex": 3,
-                          "endColumnIndex": 4
+                          sheetId: githubSheetId,
+                          startRowIndex: 0,
+                          endRowIndex: endRowIndex,
+                          startColumnIndex: 3,
+                          endColumnIndex: 4
                         }
                       ]
                     }
                   },
-                  "targetAxis": "LEFT_AXIS"
+                  targetAxis: "LEFT_AXIS"
                 },
                 {
                   // Closed PRs
-                  "series": {
-                    "sourceRange": {
-                      "sources": [
+                  series: {
+                    sourceRange: {
+                      sources: [
                         {
-                          "sheetId": githubSheetId,
-                          "startRowIndex": 0,
-                          "endRowIndex": endRowIndex,
-                          "startColumnIndex": 4,
-                          "endColumnIndex": 5
+                          sheetId: githubSheetId,
+                          startRowIndex: 0,
+                          endRowIndex: endRowIndex,
+                          startColumnIndex: 4,
+                          endColumnIndex: 5
                         }
                       ]
                     }
                   },
-                  "targetAxis": "LEFT_AXIS"
+                  targetAxis: "LEFT_AXIS"
                 },
                 {
                   // Food Happiness
-                  "series": {
-                    "sourceRange": {
-                      "sources": [
+                  series: {
+                    sourceRange: {
+                      sources: [
                         {
-                          "sheetId": githubSheetId,
-                          "startRowIndex": 0,
-                          "endRowIndex": endRowIndex,
-                          "startColumnIndex": 5,
-                          "endColumnIndex": 6
+                          sheetId: githubSheetId,
+                          startRowIndex: 0,
+                          endRowIndex: endRowIndex,
+                          startColumnIndex: 5,
+                          endColumnIndex: 6
                         }
                       ]
                     }
                   },
-                  "targetAxis": "RIGHT_AXIS"
+                  targetAxis: "RIGHT_AXIS"
                 },
               ],
-              "headerCount": 1
+              headerCount: 1
             }
           },
 
