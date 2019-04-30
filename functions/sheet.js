@@ -18,7 +18,9 @@ exports.main = async (title) => {
     if (!id) {
       id = await sheetHelpers.createSpreadsheet(title);
       newSheet = true;
+      await sheetHelpers.addSheet(id, 'Github Data');
     }
+    await sheetHelpers.updateCellFormatToDate(id);
   } catch (err) {
     console.error(`Error: ${err}`);
     throw new Error(err);
@@ -48,7 +50,6 @@ exports.main = async (title) => {
 
     const lastRowIndex = await sheetHelpers.appendOrUpdateRowData(id,
       [[date, openIssues, closedIssues, openPullRequests, mergedPullRequests, formScore]]);
-    await sheetHelpers.updateCellFormatToDate(id);
 
     const chartId = await sheetHelpers.getChartId(id);
     console.log(`chartId: ${chartId}`);

@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
 const FOODSHEETINDEX = 0;
-const GITHUBSHEETINDEX = 3;
+const GITHUBSHEETINDEX = 1;
 
 module.exports = function (auth) {
   class SheetsHelpers {
@@ -294,8 +294,8 @@ module.exports = function (auth) {
           },
           fields: 'userEnteredFormat(numberFormat)'
         },
-
       }];
+
       const resource = {
         requests,
       }
@@ -305,6 +305,23 @@ module.exports = function (auth) {
         resource,
       });
       console.log(`Update cell format response: ${statusText}`);
+    }
+
+    async addSheet(spreadsheetId, title) {
+      const requests = [{
+        addSheet: {
+          properties: {title}
+        }
+      }];
+      const resource = {
+        requests,
+      }
+
+      const { data } = await this.sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        resource,
+      });
+      console.log(data);
     }
 
 
