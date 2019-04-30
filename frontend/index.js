@@ -47,13 +47,13 @@ function initClient() {
  */
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
-    authorizeButton.style.display = 'none';
-    analysisButton.style.display = 'block';
-    signoutButton.style.display = 'block';
+    authorizeButton.disabled = true;
+    analysisButton.disabled = false;
+    signoutButton.disabled = false;
   } else {
-    authorizeButton.style.display = 'block';
-    analysisButton.style.display = 'none';
-    signoutButton.style.display = 'none';
+    authorizeButton.disabled = false;
+    analysisButton.disabled = true;
+    signoutButton.disabled = true;
   }
 }
 

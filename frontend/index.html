@@ -10,16 +10,22 @@
   <p>Daily Github Productivity vs Food Report</p>
 
   <!--Add buttons to initiate auth sequence and sign out-->
-  <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQlhbi1DNRwNYnbcSSAJUc8twY_akRPNRu64Z39EM8Ah8CDdaxblk3R4B_5MCKsA855mDyoGf9Yjrf5/pubchart?oid=772465934&amp;format=image"
-  width="650" height="400">
+  <iframe
+    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQlhbi1DNRwNYnbcSSAJUc8twY_akRPNRu64Z39EM8Ah8CDdaxblk3R4B_5MCKsA855mDyoGf9Yjrf5/pubchart?oid=772465934&amp;format=image"
+    width="650" height="400">
   </iframe>
-  
-  <button id="authorize_button" style="display: none;">Authorize</button>
-  <button id="analysis_button" style="display: none;">Share Analysis</button>
-  <button id="signout_button" style="display: none;">Sign Out</button>
+
+  <button id="authorize_button" class="mdl-button mdl-js-button mdl-button--raised">Authorize</button>
+  <button id="analysis_button" class="mdl-button mdl-js-button mdl-button--raised">Share Analysis</button>
+  <button id="signout_button" class="mdl-button mdl-js-button mdl-button--raised">Sign Out</button>
   <p id=result></p>
 
   <pre id="content" style="white-space: pre-wrap;"></pre>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Base64/1.0.2/base64.js"></script>
   <script type="text/javascript" src="./keys.js"></script>
   <script type="text/javascript" src="./index.js"></script>
