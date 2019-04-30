@@ -1,4 +1,6 @@
 const { google } = require('googleapis');
+const FOODSHEETINDEX = 0;
+const GITHUBSHEETINDEX = 3;
 
 module.exports = function (auth) {
   class SheetsHelpers {
@@ -83,7 +85,8 @@ module.exports = function (auth) {
     }
 
     async createChart(spreadsheetId, endRowIndex) {
-      const sheetId = await this.getSheetId(spreadsheetId, 3);
+      const foodSheetId = await this.getSheetId(spreadsheetId, FOODSHEETINDEX);
+      const githubSheetId = await this.getSheetId(spreadsheetId, GITHUBSHEETINDEX);
       const requests = [{
         addChart: {
           "chart": {
@@ -112,7 +115,7 @@ module.exports = function (auth) {
                     "sourceRange": {
                       "sources": [
                         {
-                          "sheetId": sheetId,
+                          "sheetId": githubSheetId,
                           "startRowIndex": 0,
                           "endRowIndex": endRowIndex,
                           "startColumnIndex": 0,
@@ -129,7 +132,7 @@ module.exports = function (auth) {
                       "sourceRange": {
                         "sources": [
                           {
-                            "sheetId": sheetId,
+                            "sheetId": githubSheetId,
                             "startRowIndex": 0,
                             "endRowIndex": endRowIndex,
                             "startColumnIndex": 1,
@@ -146,7 +149,7 @@ module.exports = function (auth) {
                       "sourceRange": {
                         "sources": [
                           {
-                            "sheetId": sheetId,
+                            "sheetId": githubSheetId,
                             "startRowIndex": 0,
                             "endRowIndex": endRowIndex,
                             "startColumnIndex": 2,
@@ -163,7 +166,7 @@ module.exports = function (auth) {
                       "sourceRange": {
                         "sources": [
                           {
-                            "sheetId": sheetId,
+                            "sheetId": githubSheetId,
                             "startRowIndex": 0,
                             "endRowIndex": endRowIndex,
                             "startColumnIndex": 3,
@@ -180,7 +183,7 @@ module.exports = function (auth) {
                       "sourceRange": {
                         "sources": [
                           {
-                            "sheetId": sheetId,
+                            "sheetId": githubSheetId,
                             "startRowIndex": 0,
                             "endRowIndex": endRowIndex,
                             "startColumnIndex": 4,
@@ -197,7 +200,7 @@ module.exports = function (auth) {
                       "sourceRange": {
                         "sources": [
                           {
-                            "sheetId": sheetId,
+                            "sheetId": githubSheetId,
                             "startRowIndex": 0,
                             "endRowIndex": endRowIndex,
                             "startColumnIndex": 5,
@@ -232,7 +235,7 @@ module.exports = function (auth) {
     }
 
     async updateChart(spreadsheetId, endRowIndex, chartId) {
-      const sheetId = await this.getSheetId(spreadsheetId, 3);
+      const githubSheetId = await this.getSheetId(spreadsheetId, GITHUBSHEETINDEX);
       console.log(`Updating chart: ${chartId}`);
       const requests = [{
         updateChartSpec: {
@@ -262,7 +265,7 @@ module.exports = function (auth) {
                   "sourceRange": {
                     "sources": [
                       {
-                        "sheetId": sheetId,
+                        "sheetId": githubSheetId,
                         "startRowIndex": 0,
                         "endRowIndex": endRowIndex,
                         "startColumnIndex": 0,
@@ -279,7 +282,7 @@ module.exports = function (auth) {
                     "sourceRange": {
                       "sources": [
                         {
-                          "sheetId": sheetId,
+                          "sheetId": githubSheetId,
                           "startRowIndex": 0,
                           "endRowIndex": endRowIndex,
                           "startColumnIndex": 1,
@@ -296,7 +299,7 @@ module.exports = function (auth) {
                     "sourceRange": {
                       "sources": [
                         {
-                          "sheetId": sheetId,
+                          "sheetId": githubSheetId,
                           "startRowIndex": 0,
                           "endRowIndex": endRowIndex,
                           "startColumnIndex": 2,
@@ -313,7 +316,7 @@ module.exports = function (auth) {
                     "sourceRange": {
                       "sources": [
                         {
-                          "sheetId": sheetId,
+                          "sheetId": githubSheetId,
                           "startRowIndex": 0,
                           "endRowIndex": endRowIndex,
                           "startColumnIndex": 3,
@@ -330,7 +333,7 @@ module.exports = function (auth) {
                     "sourceRange": {
                       "sources": [
                         {
-                          "sheetId": sheetId,
+                          "sheetId": githubSheetId,
                           "startRowIndex": 0,
                           "endRowIndex": endRowIndex,
                           "startColumnIndex": 4,
@@ -347,7 +350,7 @@ module.exports = function (auth) {
                     "sourceRange": {
                       "sources": [
                         {
-                          "sheetId": sheetId,
+                          "sheetId": githubSheetId,
                           "startRowIndex": 0,
                           "endRowIndex": endRowIndex,
                           "startColumnIndex": 5,
@@ -379,8 +382,8 @@ module.exports = function (auth) {
     }
 
     async updateCellFormatToDate(spreadsheetId, githubLastRowIndex) {
-      const formResponsesSheetId = await this.getSheetId(spreadsheetId, 0);
-      const githubSheetId = await this.getSheetId(spreadsheetId, 3);
+      const formResponsesSheetId = await this.getSheetId(spreadsheetId, FOODSHEETINDEX);
+      const githubSheetId = await this.getSheetId(spreadsheetId, GITHUBSHEETINDEX);
 
       const requests = [{
         repeatCell: {

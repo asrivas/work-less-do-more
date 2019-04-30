@@ -24,9 +24,11 @@ exports.main = async (title) => {
     throw new Error(err);
   }
 
-  const GitHubHelpers = require('./githubHelpers')('./githubToken.json',
+  const GitHubHelpers = require('./githubHelpers')(
+    './githubToken.json',
     'GoogleCloudPlatform',
-    'nodejs-getting-started');
+    'nodejs-getting-started'
+  );
   const gitHubHelpers = new GitHubHelpers();
 
   try {
