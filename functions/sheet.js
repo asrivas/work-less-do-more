@@ -60,7 +60,6 @@ exports.main = async (title) => {
     }
 
     if (newSheet) {
-      //  TODO(asrivast): Use IAM, read email from request.  
       await driveHelpers.addUser(id, 'gsuite.demos@gmail.com');
       await driveHelpers.addUser(id, 'fhinkel.demo@gmail.com');
     }

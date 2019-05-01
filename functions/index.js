@@ -8,7 +8,7 @@ const sheet = require('./sheet');
  */
 exports.githubChart = (req, res) => {
   handleCors(req, res);
-  sheet.main("Test Title IO GCF").then((id) => res.status(200).send(id));
+  sheet.main("Github vs Food").then((id) => res.status(200).send(id));
 };
 
 handleCors = (req, res) => {
