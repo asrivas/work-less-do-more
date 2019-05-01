@@ -343,7 +343,6 @@ module.exports = function (auth) {
         let scores = m.get(date);
         m.set(date, [...scores, Number(score)]);
       }
-      console.log(m);
       return m;
     }
 

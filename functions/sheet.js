@@ -28,8 +28,8 @@ exports.main = async (title) => {
 
   const GitHubHelpers = require('./githubHelpers')(
     './githubToken.json',
-    'GoogleCloudPlatform',
-    'nodejs-getting-started'
+    'nodejs',
+    'node'
   );
   const gitHubHelpers = new GitHubHelpers();
 

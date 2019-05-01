@@ -115,16 +115,22 @@ module.exports = (filename, owner, repo) => {
       let yesterday = new Date(date.setDate(date.getDate() - 1));
       console.log(`Fetching number of merged PRs for repo: ${this.repo}`);
       try {
-        const options = await this.octokit.pulls.list.endpoint.merge({
+        // Only get the last 100 updated PRs. Assuming we didn't update more
+        // than 100 PRs since yesterday.
+        const { data } = await this.octokit.pulls.list({
           owner: this.owner,
           repo: this.repo,
           state: 'closed',
-          since: yesterday.toISOString(),
+          sort: 'updated',
+          direction: 'desc',
+          per_page: 100, 
         });
-        let prs = await this.octokit.paginate(options);
-        console.log(`Found ${prs.length} PRs`);
+        console.log(`Found ${data.length} PRs`);
 
-        prs = prs.filter(pr => {
+        let prs = data.filter(pr => pr.merged_at);
+        console.log(`Found ${prs.length} merged PRs`);
+
+        prs = data.filter(pr => {
           const mergedAt = new Date(pr.merged_at);
           if ((mergedAt.getTime() > yesterday.getTime())
             && (mergedAt.getTime() < today.getTime())) {
