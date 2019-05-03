@@ -50,10 +50,13 @@ function updateSigninStatus(isSignedIn) {
     authorizeButton.disabled = true;
     analysisButton.disabled = false;
     signoutButton.disabled = false;
+    document.getElementById('charImg').src = './chart.svg';
+
   } else {
     authorizeButton.disabled = false;
     analysisButton.disabled = true;
     signoutButton.disabled = true;
+    document.getElementById('charImg').src = './auth.png';
   }
 }
 
@@ -75,23 +78,18 @@ function handleSignoutClick(event) {
  *  Triggers the analysis HTTP Request.
  */
 function handleAnalysisClick(event) {
-  console.log("handle the analysis")
   document.getElementById('spinner').classList.add('is-active');
   const resultElement = document.getElementById('result');
   fetch('http://us-central1-serverless-demos-234923.cloudfunctions.net/githubChart').then(response => {
-    console.log('fetching all the things');
     console.log(response);
     document.getElementById('spinner').classList.remove('is-active');
     if (!response.ok) {
-      console.log(`Wrong status code ${response.status}`);
       const p = document.createElement('p');
       p.innerHTML = 'Error: ' + response;
       resultElement.appendChild(p);
       return;
     }
     response.text().then(link => {
-      console.log('this is the content:')
-      console.log(link);
       const sheetLink = document.createElement('a')
       sheetLink.setAttribute('href', link);
       sheetLink.innerHTML = 'here';

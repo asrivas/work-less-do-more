@@ -7,18 +7,21 @@
 </head>
 
 <body>
-  <h3>Daily Github Productivity vs Food Report</h3>
+  <h3 style="padding-left:25px">Daily Github Productivity vs Food Report</h3>
 
-  <!--Add buttons to initiate auth sequence and sign out-->
-  <iframe
-    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQlhbi1DNRwNYnbcSSAJUc8twY_akRPNRu64Z39EM8Ah8CDdaxblk3R4B_5MCKsA855mDyoGf9Yjrf5/pubchart?oid=772465934&amp;format=image"
-    width="650" height="400">
-  </iframe>
+  <p style="padding-left:5px">
+    <img id='charImg' src="./chart.svg" width="650" height="400">
+    </img>
+  </p>
 
-  <button id="authorize_button" class="mdl-button mdl-js-button mdl-button--raised">Authorize</button>
-  <button id="analysis_button" class="mdl-button mdl-js-button mdl-button--raised">Share Analysis</button>
-  <button id="signout_button" class="mdl-button mdl-js-button mdl-button--raised">Sign Out</button>
-  <div id="spinner" class="mdl-spinner mdl-js-spinner"></div>
+  <p style="padding-left:50px">
+    <button style="margin:5px" id="authorize_button"
+      class="mdl-button mdl-js-button mdl-button--raised">Authorize</button>
+    <button style="margin:5px" id="analysis_button" class="mdl-button mdl-js-button mdl-button--raised">Share
+      Analysis</button>
+    <button style="margin:5px" id="signout_button" class="mdl-button mdl-js-button mdl-button--raised">Sign Out</button>
+    <div id="spinner" class="mdl-spinner mdl-js-spinner"></div>
+  </p>
   <p id=result></p>
 
   <pre id="content" style="white-space: pre-wrap;"></pre>
