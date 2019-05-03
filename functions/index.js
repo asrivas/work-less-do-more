@@ -1,14 +1,15 @@
 const sheet = require('./sheet');
 
 /**
- * Updates data into the chart from Github and mails a chart.
+ * Updates data into the chart.
  *
  * @param {!express:Request} req HTTP request context.
  * @param {!express:Response} res HTTP response context.
  */
-exports.githubChart = (req, res) => {
+exports.githubChart = async (req, res) => {
   handleCors(req, res);
-  sheet.main("Github vs Food").then((id) => res.status(200).send(id));
+  const id = await sheet.main("Github vs Food");
+  res.status(200).send(id);
 };
 
 handleCors = (req, res) => {
