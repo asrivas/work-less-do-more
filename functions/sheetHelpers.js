@@ -219,7 +219,6 @@ module.exports = function (auth) {
           chart: {
             spec: this.createChartSpec(githubSheetId, endRowIndex),
             position: {
-              // Change to update later.
               newSheet: true
             }
           }
