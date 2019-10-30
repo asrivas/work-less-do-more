@@ -22,7 +22,7 @@
   "homepage": "https://github.com/fhinkel/Sheet-Node.js#readme",
   "dependencies": {
     "@octokit/rest": "^16.19.0",
-    "googleapis": "^38.0.0",
+    "googleapis": "^44.0.0",
     "readline-promise": "^1.0.4"
   }
 }
