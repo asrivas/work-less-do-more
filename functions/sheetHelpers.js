@@ -375,6 +375,3 @@ module.exports = function (auth) {
 
   return SheetsHelpers;
 }
-
-
-
