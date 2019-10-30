@@ -8,7 +8,7 @@ const sheet = require('./sheet');
  */
 exports.githubChart = async (req, res) => {
   handleCors(req, res);
-  const id = await sheet.main("Github vs Food");
+  const id = await sheet.main("Productivity Tracker");
   res.status(200).send(id);
 };
 

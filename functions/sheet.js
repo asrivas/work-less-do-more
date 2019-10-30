@@ -11,16 +11,19 @@ exports.main = async (title) => {
   const DriveHelpers = require('./driveHelpers')(auth);
   const driveHelpers = new DriveHelpers();
 
-  let newSheet;
   let id;
   try {
     id = await driveHelpers.idOfSheet(title);
     if (!id) {
       id = await sheetHelpers.createSpreadsheet(title);
-      newSheet = true;
       await sheetHelpers.addSheet(id, 'Github Data');
     }
     await sheetHelpers.updateCellFormatToDate(id);
+
+    // Add your teams' emails below.
+    // If you get permissions errors, this could be due to a propogation delay.
+    await driveHelpers.addUser(id, 'gsuite.demos@gmail.com');
+    await driveHelpers.addUser(id, 'fhinkel.demo@gmail.com');
   } catch (err) {
     console.error(`Error: ${err}`);
     throw new Error(err);
@@ -59,10 +62,6 @@ exports.main = async (title) => {
       await sheetHelpers.updateChart(id, lastRowIndex, chartId);
     }
 
-    if (newSheet) {
-      await driveHelpers.addUser(id, 'gsuite.demos@gmail.com');
-      await driveHelpers.addUser(id, 'fhinkel.demo@gmail.com');
-    }
   } catch (err) {
     console.error(`Error: ${err}`);
   }

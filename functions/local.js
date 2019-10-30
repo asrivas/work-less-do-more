@@ -1,4 +1,4 @@
 const sheet = require('./sheet');
 
-let title = "IO from Local 2";
+let title = "Productivity Tracker (Local)";
 sheet.main(title).then((id) => console.log(id));
