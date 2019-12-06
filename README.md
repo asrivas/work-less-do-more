@@ -6,7 +6,7 @@ To generate the productivity chart you may either deploy the Cloud Function or r
 
 ## Set up
 
-1. Enable Cloud Functions, Drive API and Sheets API in a Google Cloud Project
+1. [Enable](https://cloud.google.com/service-usage/docs/enable-disable) Cloud Functions, Drive API and Sheets API in a Google Cloud Project
 1. Authenticate with gcloud to a project with Cloud Functions enabled: ` $ gcloud auth application-default login`
 1. Acquire a Github token and store in /functions
 
@@ -17,3 +17,5 @@ To generate the productivity chart you may either deploy the Cloud Function or r
 1. [Cloud Scheduler](https://cloud.google.com/scheduler/)
 1. [Octokit(Node)](https://www.npmjs.com/package/@octokit/rest)
 
+### Presentations by the Authors About This Code
+* [Work Less and Do More: Google Sheets for Node.js Developers - Google I/O'19](https://youtu.be/xfXpuHBNkwo)
