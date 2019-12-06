@@ -12,7 +12,8 @@ To generate the productivity chart you may either deploy the Cloud Function or r
 
 ## Reference Material
 
-1. Sheets API: developers.google.com/sheets/api/
-1. Cloud Functions: cloud.google.com/functions/
-1. Cloud Scheduler: cloud.google.com/scheduler/
-1. Octokit(Node): https://www.npmjs.com/package/@octokit/rest
+1. [Sheets API](https://developers.google.com/sheets/api/)
+1. [Cloud Functions](https://cloud.google.com/functions/)
+1. [Cloud Scheduler](https://cloud.google.com/scheduler/)
+1. [Octokit(Node)](https://www.npmjs.com/package/@octokit/rest)
+
