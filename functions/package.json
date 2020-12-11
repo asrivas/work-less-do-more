@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "googleapis": "^46.0.0",
+    "googleapis": "^66.0.0",
     "@octokit/rest": "^16.19.0"
   }
 }
